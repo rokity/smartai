@@ -46,7 +46,7 @@ class Interface:
 		return risp
 
 	def shoot(self, direction):
-		self.tn.write((self.nome + " SHOOt "+ direction).encode('ascii') + b"\n")
+		self.tn.write((self.nome + " SHOOT "+ direction).encode('ascii') + b"\n")
 		risp = self.tn.read_some()
 		print(risp)
 		return risp
