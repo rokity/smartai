@@ -3,10 +3,16 @@ import telnetlib
 
 
 class Interface:
+	def is_connected(self):
+                return False if self.tn.get_socket().fileno()==-1 else True
+
 	def __init__(self, host = "margot.di.unipi.it", port = 8421):
 		self.host = host
 		self.port = port
 		self.tn = telnetlib.Telnet(self.host, self.port)
+
+		
+			
 
 	def new_game(self, nome):
 		self.nome = nome
