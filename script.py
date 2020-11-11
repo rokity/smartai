@@ -6,11 +6,15 @@
 # print(tl.read_eager().decode('ascii'))
 
 
-HOST = "margo.di.unipi.it"
-PORT=8421
+HOST = "margot.di.unipi.it"
+PORT=8422
 
 
-from Interface import Interface
+from ChatServer import ChatServer
 
-tl=Interface(HOST,PORT)
-print(tl)
+cs=ChatServer(HOST,PORT,"test_riccardo")
+_global=cs.get_channels()[0]
+cs.join_existing_channel(_global)
+cs.send_message_on_channel(_global,"test library")
+
+received_message=[]
