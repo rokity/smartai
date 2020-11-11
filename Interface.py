@@ -35,7 +35,7 @@ class Interface:
 
 	def look(self):
 		self.tn.write((self.nome + " LOOK").encode('ascii') + b"\n")
-		risp = self.tn.read_some()
+		risp = self.tn.read_until("ENDOFMAP")
 		print(risp)
 		return risp
 
@@ -53,7 +53,7 @@ class Interface:
 	
 	def status(self):
 		self.tn.write((self.nome + " STATUS").encode('ascii') + b"\n")
-		risp = self.tn.read_some()
+		risp = self.tn.read_until("ENDOFSTATUS")
 		print(risp)
 		return risp
 
