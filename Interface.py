@@ -1,7 +1,8 @@
 import getpass
 import telnetlib
+import time
 
-
+TIME = 0.3
 class Interface:
 	def is_connected(self):
                 return False if self.tn.get_socket().fileno()==-1 else True
@@ -17,24 +18,28 @@ class Interface:
 	def new_game(self, nome):
 		self.nome = nome
 		self.tn.write(("NEW "+self.nome).encode('ascii') + b"\n")
+		time.sleep(TIME)
 		risp = self.tn.read_some()
 		print(risp)
 		return risp
 
 	def join_game(self, player, nature, role, info=""):
 		self.tn.write((self.nome + " JOIN "+player+" "+ nature + " "+ role + " "+info).encode('ascii') + b"\n")
+		time.sleep(TIME)
 		risp = self.tn.read_some()
 		print(risp)
 		return risp
 
 	def start_game(self):
 		self.tn.write((self.nome + " START").encode('ascii') + b"\n")
+		time.sleep(TIME)
 		risp = self.tn.read_some()
 		print(risp)
 		return risp
 
 	def leave_game(self, reason):
 		self.tn.write((self.nome + " LEAVE "+ reason).encode('ascii') + b"\n")
+		time.sleep(TIME)
 		risp = self.tn.read_some()
 		print(risp)
 		return risp
@@ -47,12 +52,14 @@ class Interface:
 
 	def move(self, direction):
 		self.tn.write((self.nome + " MOVE "+ direction).encode('ascii') + b"\n")
+		time.sleep(TIME)
 		risp = self.tn.read_some()
 		print(risp)
 		return risp
 
 	def shoot(self, direction):
 		self.tn.write((self.nome + " SHOOT "+ direction).encode('ascii') + b"\n")
+		time.sleep(TIME)
 		risp = self.tn.read_some()
 		print(risp)
 		return risp
@@ -65,12 +72,14 @@ class Interface:
 
 	def accuse(self, player):
 		self.tn.write((self.nome + " ACCUSE " + player).encode('ascii') + b"\n")
+		time.sleep(TIME)
 		risp = self.tn.read_some()
 		print(risp)
 		return risp
 
 	def nop(self):
 		self.tn.write((self.nome + " NOP").encode('ascii') + b"\n")
+		time.sleep(TIME)
 		risp = self.tn.read_some()
 		print(risp)
 		return risp
