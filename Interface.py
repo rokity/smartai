@@ -29,7 +29,7 @@ class Interface:
 
 	def leave_game(self, reason):
 		self.tn.write((self.nome + " LEAVE "+ reason).encode('ascii') + b"\n")
-		risp = self.tn.readsome()
+		risp = self.tn.read_some()
 		print(risp)
 		return risp
 
