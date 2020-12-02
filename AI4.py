@@ -4,6 +4,7 @@ from Interface import Interface
 from DataManager import Data_Manager
 from posBandiera import pos_bandiera
 from stato_mappa import stato_mappa	
+from ChatServer import ChatServer
 import time
 import numpy as np
 import random
@@ -17,6 +18,7 @@ TIME = 0.6    #150 ms per training
 class env:
 	def __init__(self, match):
 		self.inter = Interface(nome = match)
+		self.chat = ChatServer()
 
 	def reset(self, match, n, numero):  
 		n = str(n)
