@@ -184,13 +184,15 @@ class env:
 			if ris == 'OK':
 				self.y = self.y+1	
 				self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.allies, self.enemies)
-				if self.state[1] == 1:
+				if self.state[1] == 1 and self.state[12] == 0:
 					return self.state, 5, False
-				else:
+				elif self.state[12] == 0:
 					return self.state, -10, False
+				else:
+					return self.state, 0, False
 
 			if ris == 'BLOCKED':
-				if self.y != 31 and self.mappa_stato[self.y+1][self.x] == 100:
+				if self.y != 31 and self.mappa_stato[self.y+1][self.x] == 100 and self.state[12] == 0:
 					return self.state, 1000, True
 				else:
 					return self.state, -100, False
@@ -200,7 +202,7 @@ class env:
 			#	state[x, y] = '.'
 			#	return state, -100, false
 
-			if ris == 'WIN':
+			if ris == 'WIN':	#non esiste
 				self.y = self.y+1	
 				self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.allies, self.enemies)
 				return self.state, 1000, True
@@ -217,13 +219,15 @@ class env:
 			if ris == 'OK':
 				self.x = self.x+1
 				self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.allies, self.enemies)
-				if self.state[2] == 1:
+				if self.state[2] == 1 and self.state[12] == 0:
 					return self.state, 5, False
-				else:
+				elif self.state[12] == 0:
 					return self.state, -10, False
+				else:
+					return self.state, 0, False
 
 			if ris == 'BLOCKED':
-				if self.x != 31 and self.mappa_stato[self.y][self.x+1] == 100:
+				if self.x != 31 and self.mappa_stato[self.y][self.x+1] == 100 and self.state[12] == 0:
 					return self.state, 1000, True
 				else:
 					return self.state, -100, False
@@ -250,14 +254,16 @@ class env:
 			if ris == 'OK':
 				self.x = self.x-1
 				self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.allies, self.enemies)
-				if self.state[2] == 1:
+				if self.state[2] == 1 and self.state[12] == 0:
 					return self.state, 5, False
-				else:
+				elif self.state[12] == 0:
 					return self.state, -10, False
+				else:
+					return self.state, 0, False
 
 
 			if ris == 'BLOCKED':
-				if self.x != 0 and self.mappa_stato[self.y][self.x-1] == 100:
+				if self.x != 0 and self.mappa_stato[self.y][self.x-1] == 100 and self.state[12] == 0:
 					return self.state, 1000, True
 				else:
 					return self.state, -100, False
@@ -296,11 +302,18 @@ class env:
 				return self.state, -20, False
 			if ris in self.allies:
 				self.allies.remove(ris)
-				return self.state, -50, False
+				if self.state[12] == 0:
+					return self.state, -50, False
+				else:
+					self.kill = self.kill + 1
+					return self.state, 100, False
 			if ris in self.enemies:
-				self.kill = self.kill + 1
 				self.enemies.remove(ris) 
-				return self.state, 100, False
+				if self.state[12] == 0:
+					self.kill = self.kill + 1
+					return self.state, 100, False
+				else:
+					return self.state, -50, False
 			if ris == '?':
 				 return self.state, -20, False
 			if ris == '.':
@@ -330,13 +343,20 @@ class env:
 				return self.state, -20, False
 			if ris == 'x' or ris == 'X':
 				return self.state, -20, False
-			if ris in self.allies:
+						if ris in self.allies:
 				self.allies.remove(ris)
-				return self.state, -50, False
+				if self.state[12] == 0:
+					return self.state, -50, False
+				else:
+					self.kill = self.kill + 1
+					return self.state, 100, False
 			if ris in self.enemies:
-				self.kill = self.kill + 1
 				self.enemies.remove(ris) 
-				return self.state, 100, False
+				if self.state[12] == 0:
+					self.kill = self.kill + 1
+					return self.state, 100, False
+				else:
+					return self.state, -50, False
 			if ris == '?':
 				 return self.state, -20, False
 			if ris == '.':
@@ -366,13 +386,20 @@ class env:
 				return self.state, -20, False
 			if ris == 'x' or ris == 'X':
 				return self.state, -20, False
-			if ris in self.allies:
+						if ris in self.allies:
 				self.allies.remove(ris)
-				return self.state, -50, False
+				if self.state[12] == 0:
+					return self.state, -50, False
+				else:
+					self.kill = self.kill + 1
+					return self.state, 100, False
 			if ris in self.enemies:
-				self.kill = self.kill + 1
 				self.enemies.remove(ris) 
-				return self.state, 100, False
+				if self.state[12] == 0:
+					self.kill = self.kill + 1
+					return self.state, 100, False
+				else:
+					return self.state, -50, False
 			if ris == '?':
 				 return self.state, -20, False
 			if ris == '.':
@@ -402,12 +429,20 @@ class env:
 				return self.state, -20, False
 			if ris == 'x' or ris == 'X':
 				return self.state, -20, False
-			if ris in self.allies:
+						if ris in self.allies:
 				self.allies.remove(ris)
-				return self.state, -50, False
+				if self.state[12] == 0:
+					return self.state, -50, False
+				else:
+					self.kill = self.kill + 1
+					return self.state, 100, False
 			if ris in self.enemies:
-				self.kill = self.kill + 1
 				self.enemies.remove(ris) 
+				if self.state[12] == 0:
+					self.kill = self.kill + 1
+					return self.state, 100, False
+				else:
+					return self.state, -50, False
 				return self.state, 100, False
 			if ris == '?':
 				 return self.state, -20, False
@@ -450,73 +485,75 @@ class env:
 				self.morto = True
 				return self.state, -50, False
 
-def get_state(mapp, bx, by, x, y, size, allies, enemies):
-	stato = np.zeros(12)
-	if y > by:
-		stato[0] = 1
-	else:	
-		stato[0] = 0
-	if y < by:
-		stato[1] = 1
-	else:	
-		stato[1] = 0
-	if x < bx:
-		stato[2] = 1
-	else:
-		stato[2] = 0
-	if x > bx:
-		stato[3] = 1
-	else:
-		stato[3] = 0
-	if y == 0 or (mapp[y-1][x] == '#' or mapp[y-1][x] == '@'):
-		stato[4] = 0
-	else: 
-		stato[4] = 1
-	if y == size - 1 or (mapp[y+1][x] == '#' or mapp[y+1][x] == '@'):
-		stato[5] = 0
-	else: 
-		stato[5] = 1
-	if x == size - 1 or (mapp[y][x+1] == '#' or mapp[y][x+1] == '@'):
-		stato[6] = 0
-	else: 
-		stato[6] = 1
-	if x == 0 or (mapp[y][x-1] == '#' or mapp[y][x-1] == '@'):
-		stato[7] = 0
-	else: 
-		stato[7] = 1
+	def get_state(mapp, bx, by, x, y, size, allies, enemies):
+		stato = np.zeros(13)
+		if self.team != self.loyalty:
+			stato[12] = 1
+		if y > by:
+			stato[0] = 1
+		else:	
+			stato[0] = 0
+		if y < by:
+			stato[1] = 1
+		else:	
+			stato[1] = 0
+		if x < bx:
+			stato[2] = 1
+		else:
+			stato[2] = 0
+		if x > bx:
+			stato[3] = 1
+		else:
+			stato[3] = 0
+		if y == 0 or (mapp[y-1][x] == '#' or mapp[y-1][x] == '@'):
+			stato[4] = 0
+		else: 
+			stato[4] = 1
+		if y == size - 1 or (mapp[y+1][x] == '#' or mapp[y+1][x] == '@'):
+			stato[5] = 0
+		else: 
+			stato[5] = 1
+		if x == size - 1 or (mapp[y][x+1] == '#' or mapp[y][x+1] == '@'):
+			stato[6] = 0
+		else: 
+			stato[6] = 1
+		if x == 0 or (mapp[y][x-1] == '#' or mapp[y][x-1] == '@'):
+			stato[7] = 0
+		else: 
+			stato[7] = 1
 
-	stato[8] = 1
-	stato[9] = 1
-	stato[10] = 1
-	stato[11] = 1
-	if y != 0:
-		for i in range(y-1, -1, -1):
-			if mapp[i][x] == '#' or mapp[i][x] in allies:
-				break
-			if mapp[i][x] in enemies:
-				stato[8] = 0
-				break
-	if y != size-1:
-		for i in range(y+1, size):
-			if mapp[i][x] == '#' or mapp[i][x] in allies:
-				break
-			if mapp[i][x] in enemies:
-				stato[9] = 0
-				break
-	if x != size-1:
-		for i in range(x+1, size):
-			if mapp[y][i] == '#' or mapp[y][i] in allies:
-				break
-			if mapp[y][i] in enemies:
-				stato[10] = 0
-				break
-	if x != 0:
-		for i in range(x-1, -1, -1):
-			if mapp[y][i] == '#' or mapp[y][i] in allies:
-				break
-			if mapp[y][i] in enemies:
-				stato[11] = 0
-				break
+		stato[8] = 1
+		stato[9] = 1
+		stato[10] = 1
+		stato[11] = 1
+		if y != 0:
+			for i in range(y-1, -1, -1):
+				if mapp[i][x] == '#' or mapp[i][x] in allies:
+					break
+				if mapp[i][x] in enemies:
+					stato[8] = 0
+					break
+		if y != size-1:
+			for i in range(y+1, size):
+				if mapp[i][x] == '#' or mapp[i][x] in allies:
+					break
+				if mapp[i][x] in enemies:
+					stato[9] = 0
+					break
+		if x != size-1:
+			for i in range(x+1, size):
+				if mapp[y][i] == '#' or mapp[y][i] in allies:
+					break
+				if mapp[y][i] in enemies:
+					stato[10] = 0
+					break
+		if x != 0:
+			for i in range(x-1, -1, -1):
+				if mapp[y][i] == '#' or mapp[y][i] in allies:
+					break
+				if mapp[y][i] in enemies:
+					stato[11] = 0
+					break
 	
-	return stato
+		return stato
 
