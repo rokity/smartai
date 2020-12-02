@@ -21,6 +21,7 @@ class ChatServer:
   def bootstrap_connection(self):
     self.tn.write(("NAME "+self.name).encode('ascii') + b"\n")
     threading.Thread(target=self.listen, args=()).start()
+    self.join_existing_channel("#LEAGUE")
 
   def join_existing_channel(self,channel):
     self.tn.write(("JOIN " + channel).encode('ascii') + b"\n")
@@ -38,7 +39,11 @@ class ChatServer:
 
   def is_connected(self):
       return False if self.tn.get_socket().fileno() == -1 else True
-      
+
+  def is_new_tournament(self,message):
+      if(message["channel"]=="#LEAGUE" and message['user']=="@LeagueManager"):
+        self.send_message_on_channel(message['message'],f"join")
+
   def listen(self):
     while(True):
       message=self.tn.read_very_eager().decode("utf-8") 
@@ -48,7 +53,13 @@ class ChatServer:
           message_text=" ".join(message[2:len(message)]).replace("\n", "")
           message={"channel":message[0],"user":message[1],"message":message_text}
           self.messages.append(message)
-          print(message)
+          self.check_message(message)
+          
+  def check_message(self,message):
+    self.is_new_tournament(message)
+    return
+
+
   
 
       
