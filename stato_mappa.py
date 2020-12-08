@@ -19,9 +19,14 @@ def stato_mappa(mapp, symbol, size, sizex):
 						stato[i][j] = t
 					else:
 						stallo = True
+	for i in range(0, sizex):
+		if stato[0][i] == 0:
+			stato[0][i] = stato[1][i] - 1
+		if stato[size-1][i] == 0:
+			stato[size-1][i] = stato[size-2][i]- 1
 	for i in range(0, size):
-		stato[0][i] = 1
-		stato[size-1][i] = 1
-		stato[i][0] = 1
-		stato[i][sizex-1] = 1
+		if stato[i][0] == 0:
+			stato[i][0] = stato[i][1] - 1
+		if stato[i][size-1] == 0:
+			stato[i][sizex-1] = stato[i][sizex-2] - 1
 	return stato
