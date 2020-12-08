@@ -179,7 +179,7 @@ class env:
 
 			if ris == 'BLOCKED':
 				if self.y!= 0 and self.mappa_stato[self.y-1][self.x] == 100 and self.state[12] == 0:
-					return self.state, 1000, True
+					return self.state, 500, True
 				else:
 					return self.state, -100, False
 
@@ -217,7 +217,7 @@ class env:
 					return self.state, 0, False
 
 			if ris == 'BLOCKED':
-				if self.y != 31 and self.mappa_stato[self.y+1][self.x] == 100 and self.state[12] == 0:
+				if self.y != self.size - 1 and self.mappa_stato[self.y+1][self.x] == 100 and self.state[12] == 0:
 					return self.state, 1000, True
 				else:
 					return self.state, -100, False
@@ -255,7 +255,7 @@ class env:
 					return self.state, 0, False
 
 			if ris == 'BLOCKED':
-				if self.x != 31 and self.mappa_stato[self.y][self.x+1] == 100 and self.state[12] == 0:
+				if self.x != self.sizex - 1 and self.mappa_stato[self.y][self.x+1] == 100 and self.state[12] == 0:
 					return self.state, 1000, True
 				else:
 					return self.state, -100, False
