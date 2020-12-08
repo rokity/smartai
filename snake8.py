@@ -57,34 +57,36 @@ for i in range(1, num):
 	done = False
 
 	while not done:   #implemetare fine game, turing game
-		if random.uniform(0, 1) < epsilon :
-			action = random.randint(0, 9) #esplorazione delle azioni
-		else:
-			action = np.argmax(q_table[state]) #selezione mossa migliore
-		#time.sleep(TIME)
-		if env.morto == True: #continuo a guardare per turing game
-			action = 4
-			#done = True #esco per partita dopo
-
-		next_state, reward, done = env.step(action)
-		next_state = conv(next_state)
-
-		old_value = q_table[state, action]
-		next_max = np.max(q_table[next_state])
-
-		new_value = (1 - alpha) * old_value + alpha * ( reward + gamma * next_max)
-		q_table[state, action] = new_value
-
-		if reward == -10: #determinare reward
-			penalties += 1
-
-		state = next_state
-		epochs += 1
-		if done:
-			print("vinto 8")
-			v = v+1
-			break
 		if env.morto == False:
+			for mos in range(0, 3- mosse):
+				if random.uniform(0, 1) < epsilon :
+					action = random.randint(0, 9) #esplorazione delle azioni
+				else:
+					action = np.argmax(q_table[state]) #selezione mossa migliore
+				#time.sleep(TIME)
+				if env.morto == True: #continuo a guardare per turing game
+					action = 4
+					#done = True #esco per partita dopo
+
+				next_state, reward, done = env.step(action)
+				next_state = conv(next_state)
+
+				old_value = q_table[state, action]
+				next_max = np.max(q_table[next_state])
+
+				new_value = (1 - alpha) * old_value + alpha * ( reward + gamma * next_max)
+				q_table[state, action] = new_value
+
+				if reward == -10: #determinare reward
+					penalties += 1
+
+				state = next_state
+				epochs += 1
+				if done:
+					print("vinto 8")
+					v = v+1
+					break
+		if env.morto == False and done == False:
 			for mos in range (0, mossa):
 				action = env.mossa_giusta()
 				next_state, reward, done = env.step(action)
