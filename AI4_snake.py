@@ -111,7 +111,6 @@ for i in range(1, num):
 					print("vinto 0")
 					v = v+1
 					break
-				print(i)
 		if not done:
 			action = 4
 			next_state, reward, done = env.step(action)
@@ -134,6 +133,9 @@ for i in range(1, num):
 	
 			new_value = (1 - alpha) * old_value + alpha * ( reward + gamma * next_max)
 			q_table[state, action] = new_value
+		print("*******************")
+		print(i)
+		print("*******************")
 	if env.morto:
 		killed = killed + 1	
 	score = score + env.score
