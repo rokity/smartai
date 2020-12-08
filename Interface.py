@@ -80,7 +80,7 @@ class Interface:
 
 	def nop(self):
 		self.tn.write((self.nome + " NOP").encode('ascii') + b"\n")
-		time.sleep(TIME)
+		time.sleep(0.6)
 		risp = self.tn.read_some()
 		return risp
 
