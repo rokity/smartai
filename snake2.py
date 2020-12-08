@@ -60,7 +60,7 @@ for i in range(1, num):
 
 	while not done:   #implemetare fine game, turing game
 		if env.morto == False:
-			for mos in range(0, 3- mosse):
+			for mos in range(0, 3- mossa):
 				if random.uniform(0, 1) < epsilon :
 					action = random.randint(0, 9) #esplorazione delle azioni
 				else:
