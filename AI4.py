@@ -10,6 +10,7 @@ import numpy as np
 import random
 import re
 import pickle
+from ChatServer import ChatServer
 
 host = "margot.di.unipi.it"
 port = 8421
@@ -25,13 +26,15 @@ def conv(a):
 class env:
 	def __init__(self, match):
 		self.inter = Interface(nome = match)
-
+		
 	def reset(self, match, n, numero, form, size, typ):  
 		n = str(n)
 		ris = self.inter.new_game(match + n, form, size)
 		#time.sleep(0.3)
 		print(str(ris))
 		ris = self.inter.join_game("AI-4-" + str(numero), "AI", "nn")
+		self.chat= ChatServer(_name="AI-4-" + str(numero))
+		self.chat.send_message_on_channel(channel=var.torneo,message="join")
 		print(str(ris))
 		#time.sleep(0.3)
 		ris = self.inter.status()
