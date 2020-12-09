@@ -43,7 +43,7 @@ q_table = pickle.load(f)
 f.close()
 alpha = 0.1
 gamma = 0.6
-epsilon = 0.1
+epsilon = -1
 
 all_epochs = []
 all_penalties = []
