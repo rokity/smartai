@@ -43,7 +43,7 @@ q_table = pickle.load(f)
 f.close()
 alpha = 0.1
 gamma = 0.6
-epsilon = 0.1
+epsilon = -1
 
 all_epochs = []
 all_penalties = []
@@ -54,7 +54,7 @@ k = 0
 ked = 0
 for i in range(1, num):
 	p = i
-	state = env.reset_join(match, p, 3) #qua devo creare la partita e fare look
+	state = env.reset_join(match, p, 2) #qua devo creare la partita e fare look
 	state = conv(state)
 	epochs, penalties, reward, = 0, 0, 0
 	done = False
