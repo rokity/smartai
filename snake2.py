@@ -53,7 +53,7 @@ k = 0
 ked = 0
 for i in range(1, num):
 	p = i
-	state = env.reset_join(match, p, 2) #qua devo creare la partita e fare look
+	state = env.reset_join(match, p, 1) #qua devo creare la partita e fare look
 	state = conv(state)
 	epochs, penalties, reward, = 0, 0, 0
 	done = False
