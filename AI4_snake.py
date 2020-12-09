@@ -11,10 +11,14 @@ import re
 import pickle
 from AI4 import env
 from variabili import var
+from AI4 import conv
 
 np.set_printoptions(threshold=np.inf)
 
 match = var.nome
+form = var.form
+size = var.size
+typ = var.typ
 num = var.numero
 mosse = 1
 
@@ -24,11 +28,6 @@ TIME = var.TIME
 #numero = 0
 								
 
-def conv(a):
-	x = 0
-	for i in range(0, 12):
-		x = x + (a[i] * (2**i))
-	return int(x)
 
 #azioni convertite in numeri
 # 0: nord
@@ -61,55 +60,57 @@ for i in range(1, num):
 	print("partita")
 	print(i)
 	print("*******************")
-	state = env.reset(match, p, 0) #qua devo creare la partita e fare look
+	state = env.reset(match, p, 0, form, size, typ) #qua devo creare la partita e fare look
 	state = conv(state)
 	epochs, penalties, reward, = 0, 0, 0
 	done = False
 
 	while not done:   #implemetare fine game, turing game
-		if random.uniform(0, 1) < epsilon :
-			action = random.randint(0, 9) #esplorazione delle azioni
-		else:
-			action = np.argmax(q_table[state]) #selezione mossa migliore
-		#time.sleep(TIME)
-		if env.morto == True: #continuo a guardare per turing game
-			action = 4
-			#done = True #esco per partita dopo
+		if env.morto == False:
+			for mos in range(0, 3- mosse):
+				if random.uniform(0, 1) < epsilon :
+					action = random.randint(0, 9) #esplorazione delle azioni
+				else:
+					action = np.argmax(q_table[state]) #selezione mossa migliore
+				#time.sleep(TIME)
+				if env.morto == True: #continuo a guardare per turing game
+					action = 4
+					#done = True #esco per partita dopo
 
-		next_state, reward, done = env.step(action)
-		next_state = conv(next_state)
+				next_state, reward, done = env.step(action)
+				next_state = conv(next_state)
 
-		old_value = q_table[state, action]
-		next_max = np.max(q_table[next_state])
+				old_value = q_table[state, action]
+				next_max = np.max(q_table[next_state])
 
-		new_value = (1 - alpha) * old_value + alpha * ( reward + gamma * next_max)
-		q_table[state, action] = new_value
+				new_value = (1 - alpha) * old_value + alpha * ( reward + gamma * next_max)
+				q_table[state, action] = new_value
 
-		if reward == -10: #determinare reward
-			penalties += 1
+				if reward == -10: #determinare reward
+					penalties += 1
 
-		state = next_state
-		epochs += 1
-		if done:
-			print("vinto 0")
-			v = v+1
-			break
-		for mos in range (0, mosse):
-			action = env.mossa_giusta()
-			next_state, reward, done = env.step(action)
-			next_state = conv(next_state)
-			#time.sleep(TIME)
+				state = next_state
+				epochs += 1
+				if done:
+					print("vinto 0")
+					v = v+1
+					break
+		if env.morto == False and done == False:
+			for mos in range (0, mosse):
+				action = env.mossa_giusta()
+				next_state, reward, done = env.step(action)
+				next_state = conv(next_state)
+						#time.sleep(TIME)
 	
-			old_value = q_table[state, action]
-			next_max = np.max(q_table[next_state])
+				old_value = q_table[state, action]
+				next_max = np.max(q_table[next_state])
 	
-			new_value = (1 - alpha) * old_value + alpha * ( reward + gamma * next_max)
-			q_table[state, action] = new_value
-			if done:
-				print("vinto 0")
-				v = v+1
-				break
-		print(i)
+				new_value = (1 - alpha) * old_value + alpha * ( reward + gamma * next_max)
+				q_table[state, action] = new_value
+				if done:
+					print("vinto 0")
+					v = v+1
+					break
 		if not done:
 			action = 4
 			next_state, reward, done = env.step(action)
@@ -132,6 +133,9 @@ for i in range(1, num):
 	
 			new_value = (1 - alpha) * old_value + alpha * ( reward + gamma * next_max)
 			q_table[state, action] = new_value
+		print("*******************")
+		print(i)
+		print("*******************")
 	if env.morto:
 		killed = killed + 1	
 	score = score + env.score

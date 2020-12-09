@@ -37,7 +37,7 @@ TIME = var.TIME
 
 env = env(match)
 #q_table = np.zeros([len(env.observation_space),len(env.action_space)])
-f = open('store1.pckl', 'rb')
+f = open('store2.pckl', 'rb')
 q_table = pickle.load(f)
 f.close()
 alpha = 0.1
@@ -53,7 +53,7 @@ k = 0
 ked = 0
 for i in range(1, num):
 	p = i
-	state = env.reset_join(match, p, 1) #qua devo creare la partita e fare look
+	state = env.reset_join(match, p, 2) #qua devo creare la partita e fare look
 	state = conv(state)
 	epochs, penalties, reward, = 0, 0, 0
 	done = False
@@ -85,7 +85,7 @@ for i in range(1, num):
 				state = next_state
 				epochs += 1
 				if done:
-					print("vinto 1")
+					print("vinto 2")
 					v = v+1
 					break
 		if env.morto == False and done == False:
@@ -127,7 +127,6 @@ for i in range(1, num):
 	
 			new_value = (1 - alpha) * old_value + alpha * ( reward + gamma * next_max)
 			q_table[state, action] = new_value
-		
 	if env.morto:
 		ked = ked + 1	
 	s = s + env.score
@@ -138,7 +137,7 @@ print(v)
 print(s)
 print(k)
 print(ked)
-f = open('store1.pckl', 'wb')
+f = open('store2.pckl', 'wb')
 pickle.dump(q_table, f)
 f.close()
 #env ha una sezione azioni possibili  env.action_space

@@ -11,8 +11,9 @@ class Data_Manager:
 		elif move[8:11] == "501":
 			return "WIN"
 		else:
+			print(move)
 			return "ERROR"
-	def mappa(mapp):
+	def mappa(mapp, size):
 		if mapp[2:4] == "OK":
 			i = mapp.find("n")
 			mapp = mapp[i+1:]
@@ -21,7 +22,7 @@ class Data_Manager:
 			a = np.asmatrix(a)
 			a = np.array(a)
 			mapp = mapp[i+1:]
-			for j in range(1, i-1):
+			for j in range(1, size):
 				b = np.array(list(mapp[:i-1]))
 				b = np.asmatrix(b)
 				b = np.array(b)
@@ -29,7 +30,7 @@ class Data_Manager:
 				mapp = mapp[i+1:]
 			return a	
 		else:
-			return mapp
+			#return mapp
 			return "ERROR"
 	def colpito(m):
 		if m[8:11] == "406":
@@ -46,8 +47,15 @@ class Data_Manager:
 			i = stat.find(" ")
 			stato = stat[:i]	#return stato match
 			stat = stat[i+1:]
-			i = stat.find("n")
-			size = int(stat[5:i-1])	#return dimensioni mappa
+			i = stat.find(" ")
+			size = int(stat[5:i])	#return dimensioni mappa
+			stat = stat[i+1:]
+			i = stat.find("n")			
+			q = stat[6:i-1]
+			if q == "Q":
+				sizex = size
+			else:
+				sizex = size*2
 			stat = stat[i+1:]
 			i = stat.find("symbol=")
 			stat = stat[i+7:]
@@ -77,7 +85,7 @@ class Data_Manager:
 			i = stat.find(" ")
 			y = int(stat[:i])		#coordinata y iniziale
 						#c'e' anche la parte state ma e' superflua
-			return stato, size, symbol, name, team, loyalty, x, y
+			return stato, size, sizex, symbol, name, team, loyalty, x, y
 		else:
 			print(stat)
 			return "ERROR"
@@ -138,3 +146,9 @@ class Data_Manager:
 			return stato
 		else:
 			return "ERROR"
+	def check(ris):
+		#print(ris)
+		if ris[2:4] != "OK":
+			return "ERROR"
+		else:
+			return "OK"

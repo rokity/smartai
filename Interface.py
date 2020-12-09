@@ -1,26 +1,29 @@
 import getpass
 import telnetlib
 import time
+from variabili import var
 
 
-TIME = 1
+TIME = var.TIME
 class Interface:
 	def __init__(self, host = "margot.di.unipi.it", port = 8421, nome=""):
 		self.host = host
 		self.port = port
 		self.nome = nome
 		self.tn = telnetlib.Telnet(self.host, self.port)
+		time.sleep(0.6)
 
-	def new_game(self, nome):
+	def new_game(self, nome, form, size, typ = ""):
 		self.nome = nome
-		self.tn.write(("NEW "+self.nome).encode('ascii') + b"\n")
-		time.sleep(TIME)
+		self.tn.write(("NEW "+self.nome + " " + form + " " + size + " " + typ).encode('ascii') + b"\n")
+		time.sleep(0.6)
 		risp = self.tn.read_some()
 		return risp
 
-	def join_game(self, player, nature, role, info=""):
-		self.tn.write((self.nome + " JOIN "+player+" "+ nature + " "+ role + " "+info).encode('ascii') + b"\n")
-		time.sleep(TIME)
+	def join_game(self, player, nature, role): #info=""):
+		#print(self.nome + " JOIN "+player+" "+ nature + " "+ role)
+		self.tn.write((self.nome + " JOIN "+player+" "+ nature + " "+ role).encode('ascii') + b"\n") #+ " "+info
+		time.sleep(0.6)
 		risp = self.tn.read_some()
 		return risp
 
@@ -37,10 +40,14 @@ class Interface:
 		return risp
 
 	def look(self):
+		time.sleep(0.2)
 		self.tn.write((self.nome + " LOOK").encode('ascii') + b"\n")
 		time.sleep(TIME)
 		risp = self.tn.read_until(("ENDOFMAP").encode('ascii'))
-		r = self.tn.read_until(("\n").encode('ascii'))
+		c = str(risp)
+		if c[2:4] == "OK":
+			r = self.tn.read_until(("\n").encode('ascii'))
+		#r = self.tn.read_until(("\n").encode('ascii'))
 		return risp
 
 	def move(self, direction):
@@ -56,10 +63,15 @@ class Interface:
 		return risp
 	
 	def status(self):
+		time.sleep(0.2)
 		self.tn.write((self.nome + " STATUS").encode('ascii') + b"\n")
 		time.sleep(TIME)
 		risp = self.tn.read_until(("ENDOFSTATUS").encode('ascii'))
-		r = self.tn.read_until(("\n").encode('ascii'))
+		#print(risp)
+		c = str(risp)
+		if c[2:4] == "OK":
+			r = self.tn.read_until(("\n").encode('ascii'))
+		#r = self.tn.read_until(("\n").encode('ascii'))
 		return risp
 
 	def accuse(self, player):
@@ -70,7 +82,7 @@ class Interface:
 
 	def nop(self):
 		self.tn.write((self.nome + " NOP").encode('ascii') + b"\n")
-		time.sleep(TIME)
+		time.sleep(0.6)
 		risp = self.tn.read_some()
 		return risp
 
