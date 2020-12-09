@@ -136,30 +136,30 @@ class env:
 		if self.ciclo:
 			self.ciclo = False
 			if self.y != 0 and self.pos < int(self.mappa_stato[self.y-1][self.x]):
-				#print(self.mappa_stato[self.y-1][self.x])
+				print(self.mappa_stato[self.y-1][self.x])
 				return 0
 			elif self.y != self.size - 1 and self.pos < int(self.mappa_stato[self.y+1][self.x]):
-				#print(self.mappa_stato[self.y+1][self.x])			
+				print(self.mappa_stato[self.y+1][self.x])			
 				return 1
 			elif self.x != self.sizex - 1 and self.pos < int(self.mappa_stato[self.y][self.x+1]):
-				#print(self.mappa_stato[self.y][self.x+1])
+				print(self.mappa_stato[self.y][self.x+1])
 				return 2
 			else: 
-				#print(self.mappa_stato[self.y][self.x-1])
+				print(self.mappa_stato[self.y][self.x-1])
 				return 3
 		else:
 			self.ciclo = True
 			if self.x != self.sizex - 1 and self.pos < int(self.mappa_stato[self.y][self.x+1]):
-				#print(self.mappa_stato[self.y][self.x+1])
+				print(self.mappa_stato[self.y][self.x+1])
 				return 2
 			elif self.x != 0 and self.pos < int(self.mappa_stato[self.y][self.x-1]):
-				#print(self.mappa_stato[self.y][self.x-1])
+				print(self.mappa_stato[self.y][self.x-1])
 				return 3
 			elif self.y != 0 and self.pos < int(self.mappa_stato[self.y-1][self.x]):
-				#print(self.mappa_stato[self.y-1][self.x])
+				print(self.mappa_stato[self.y-1][self.x])
 				return 0
 			else:
-				#print(self.mappa_stato[self.y+1][self.x])			
+				print(self.mappa_stato[self.y+1][self.x])			
 				return 1
 
 	def step(self, action):

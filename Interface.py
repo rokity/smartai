@@ -40,8 +40,9 @@ class Interface:
 		return risp
 
 	def look(self):
+		time.sleep(0.2)
 		self.tn.write((self.nome + " LOOK").encode('ascii') + b"\n")
-		time.sleep(0.6)
+		time.sleep(TIME)
 		risp = self.tn.read_until(("ENDOFMAP").encode('ascii'))
 		c = str(risp)
 		if c[2:4] == "OK":
@@ -62,8 +63,9 @@ class Interface:
 		return risp
 	
 	def status(self):
+		time.sleep(0.2)
 		self.tn.write((self.nome + " STATUS").encode('ascii') + b"\n")
-		time.sleep(0.6)
+		time.sleep(TIME)
 		risp = self.tn.read_until(("ENDOFSTATUS").encode('ascii'))
 		#print(risp)
 		c = str(risp)

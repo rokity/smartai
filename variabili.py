@@ -1,7 +1,7 @@
 class var:
-	nome = "AI4_.-_."    #distanza (2-3bit)  #fine scacchiera   #sono il più vicino  #no energia
-	form = "W"
+	nome = "AI4_train"    #distanza (2-3bit)  #fine scacchiera   #sono il più vicino  #no energia
+	form = "Q"
 	size = "1"
 	typ = "T"
-	numero = 6
-	TIME = 1
+	numero = 26
+	TIME = 0.7
