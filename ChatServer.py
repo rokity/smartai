@@ -26,7 +26,7 @@ class ChatServer:
 
   def bootstrap_connection(self):
     self.tn.write(("NAME "+self.name).encode('ascii') + b"\n")
-    self.join_existing_channel("#LEAGUE")
+    self.join_all_channels()
     self.init_file_logs()
     threading.Thread(target=self.listen, args=()).start()
     
@@ -41,6 +41,10 @@ class ChatServer:
 
   def send_message_on_channel(self,channel,message):
     self.tn.write(("POST " + channel + " " + message).encode('ascii') + b"\n")
+
+  def join_all_channels(self):
+      for channel in self.channels:
+        self.join_existing_channel(channel)
 
   def get_channels(self):
     return self.channels
@@ -68,9 +72,7 @@ class ChatServer:
     df=pd.read_csv(self.log_file).to_dict('records')
     message['time']=self.get_time_now()    
     df.append(message)
-    print(df)
     df=pd.DataFrame(df,columns=['channel', 'user','message','time'])
-    print(df)
     df.to_csv(self.log_file,index=False)
 
   def listen(self):
@@ -81,8 +83,7 @@ class ChatServer:
         message_text=" ".join(message[2:len(message)]).replace("\n", "")
         message={"channel":message[0],"user":message[1],"message":message_text}
         self.save_message_to_file(message)
-        if(message['channel'] in self.channels_joined):          
-          self.messages.append(message)
+        if(message['channel'] in self.channels_joined):        
           self.check_message(message)        
         
         
