@@ -4,5 +4,5 @@ class var:
 	size = "1"
 	typ = "T"
 	numero = 26
-	TIME = 0.3
-	torneo ="tournament"
+	TIME = 0.4
+	torneo ="SmartCUP2dryrun"

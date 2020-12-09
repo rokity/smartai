@@ -33,6 +33,7 @@ class env:
 		#time.sleep(0.3)
 		print(str(ris))
 		ris = self.inter.join_game("AI-4-" + str(numero), "AI", "nn")
+		print("AI-4-" + str(numero))
 		self.chat= ChatServer(_name="AI-4-" + str(numero))
 		self.chat.send_message_on_channel(channel=var.torneo,message="join")
 		print(str(ris))
