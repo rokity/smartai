@@ -17,7 +17,7 @@ np.set_printoptions(threshold=np.inf)
 
 match = var.nome
 num = var.numero
-mossa = 2
+mossa = 5
 
 host = "margot.di.unipi.it"
 port = 8421
