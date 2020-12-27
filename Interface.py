@@ -15,7 +15,7 @@ class Interface:
 
 	def new_game(self, nome, form, size, typ = ""):
 		self.nome = nome
-		self.tn.write(("NEW "+self.nome + " " + form + " " + size + " " + typ).encode('ascii') + b"\n")
+		self.tn.write(("NEW "+self.nome + " " + form + size + typ).encode('ascii') + b"\n")
 		time.sleep(0.6)
 		risp = self.tn.read_some()
 		return risp
