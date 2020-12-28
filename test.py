@@ -25,13 +25,8 @@ mossa = 0
 host = "margot.di.unipi.it"
 port = 8421
 TIME = var.TIME
-#numero = 0
 
 
-#agent = Agent.create(agent = 'tensorforce', environment = Env(match), update = 64, optimizer = dict(optimizer = 'adam', learning_rate = 1e-3), objective = 'policy_gradient')
-
-
-#agent = Agent.create(agent = 'tensorforce', environment = env, update = 64, optimizer = dict(optimizer = 'adam', learning_rate = 1e-3), objective = 'policy_gradient')
 
 s = 0
 k = 0

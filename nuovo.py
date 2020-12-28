@@ -19,17 +19,12 @@ host = "margot.di.unipi.it"
 port = 8421
 TIME = var.TIME  #150 ms per training
 
-def conv(a):
-	x = 0
-	for i in range(0, 13):
-		x = x + (a[i] * (2**i))
-	return int(x)
 
 def get_state(mapp, bx, by, x, y, size, sizex, allies, enemies, t, l):
 	stato = np.zeros(13)
-	if t != l:
+	if t != l:              #loyalty
 		stato[12] = 1
-	if y > by:
+	if y > by:              #4 bit posizoine bandiera
 		stato[0] = 1
 	else:	
 		stato[0] = 0
@@ -45,23 +40,24 @@ def get_state(mapp, bx, by, x, y, size, sizex, allies, enemies, t, l):
 		stato[3] = 1
 	else:
 		stato[3] = 0
-	if y == 0 or (mapp[y-1][x] == '#' or mapp[y-1][x] == '@'):
+				#4 bit per i muri
+	if y == 0 or (mapp[y-1][x] == '#' or mapp[y-1][x] == '@' or mapp[y-1][x] == '!'):
 		stato[4] = 0
 	else: 
 		stato[4] = 1
-	if y == size - 1 or (mapp[y+1][x] == '#' or mapp[y+1][x] == '@'):
+	if y == size - 1 or (mapp[y+1][x] == '#' or mapp[y+1][x] == '@' or mapp[y+1][x] == '!'):
 		stato[5] = 0
 	else: 
 		stato[5] = 1
-	if x == sizex - 1 or (mapp[y][x+1] == '#' or mapp[y][x+1] == '@'):
+	if x == sizex - 1 or (mapp[y][x+1] == '#' or mapp[y][x+1] == '@' or mapp[y][x+1] == '!'):
 		stato[6] = 0
 	else: 
 		stato[6] = 1
-	if x == 0 or (mapp[y][x-1] == '#' or mapp[y][x-1] == '@'):
+	if x == 0 or (mapp[y][x-1] == '#' or mapp[y][x-1] == '@' or mapp[y][x-1] == '!'):
 		stato[7] = 0
 	else: 
 		stato[7] = 1
-
+				#4 bit per nemici
 	stato[8] = 1
 	stato[9] = 1
 	stato[10] = 1
@@ -134,15 +130,12 @@ class Env(Environment):
 		#self._timestep = 1000
 		super().__init__()
 	def reset(self):
-		self._timestep = 1000
 		ris = self.inter.new_game(self.match + self.n, self.form, self.size)
-		#time.sleep(0.3)
 		print(str(ris))
 		ris = self.inter.join_game("AI-4-" + self.numero, "AI", "nn")
-		#self.chat= ChatServer(_name="AI-4-" + str(numero))
-		#self.chat.send_message_on_channel(channel=var.torneo,message="join")
+		self.chat= ChatServer(_name="AI-4-" + str(numero))
+		self.chat.send_message_on_channel(channel=var.torneo,message="join")
 		print(str(ris))
-		#time.sleep(0.3)
 		ris = self.inter.status()
 		self.stato, self.size, self.sizex, self.symbol, self.name, self.team, self.loyalty, self.x, self.y = Data_Manager.status_iniziale(str(ris))			#name è superfluo, lo sappiamo già
 		self.x = int(self.x)
@@ -155,22 +148,17 @@ class Env(Environment):
 		ris = self.inter.status()
 		self.stato, self.energy, self.score, self.st, self.allies, self.enemies = Data_Manager.status(str(ris), self.name, self.symbol)
 		ris = self.inter.look()
-		#time.sleep(TIME)
+
 		self.mapp = Data_Manager.mappa(str(ris), self.size)
-		#print(self.mapp)
-		#print(self.x)
-		#print(self.y)
-		#print(self.mapp[self.y][self.x])
+
 		self.bx, self.by = pos_bandiera(self.mapp, self.symbol, int(self.size), self.sizex)
 		self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.sizex, self.allies, self.enemies, self.team, self.loyalty)
 		self.mappa_stato = stato_mappa(self.mapp, self.symbol, int(self.size), self.sizex)
-		#print(self.mappa_stato)
+
 		self.ciclo = True
 		self.kill = 0		
 		return self.state
-		# coordinate iniziali date da status?
-		# stato iniziale
-		#state = # direi la visuale della mappa da look()
+
 
 
 	def states(self):
@@ -183,7 +171,7 @@ class Env(Environment):
 		self.pos = self.mappa_stato[self.y][self.x]
 		self.pos = int(self.pos)
 		if self.energy > 50:
-			self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.sizex, self.allies, self.enemies, self.team, self.loyalty)
+			self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.sizex, self.allies, self.enemies, self.team, self.loyalty)  #spara se c'e' un nemico setta il valore della prossima azione
 			if self.state[8] == 0:
 				return 5
 			if self.state[9] == 0:
@@ -192,7 +180,7 @@ class Env(Environment):
 				return 7 
 			if self.state[11] == 0:
 				return 8
-		if self.ciclo:
+		if self.ciclo:    #prova ad andare sopra sotto e alla volta dopo est ovest
 			self.ciclo = False
 			if self.y != 0 and self.pos < int(self.mappa_stato[self.y-1][self.x]):
 				print(self.mappa_stato[self.y-1][self.x])
@@ -243,19 +231,9 @@ class Env(Environment):
 				else:
 					return self.state, -100, False
 
-			#if ris == 'TRAP':
-				#state[x, y-1] = 'ai'
-				#state[x, y] = '.'
-				#return state, -100, false
-
-			if ris == 'WIN':
-				self.y = self.y-1
-				self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.sizex, self.allies, self.enemies, self.team, self.loyalty)
-				return self.state, 10000, True
 			if ris == 'ERROR':
 				time.sleep(0.4)
-				ris = self.inter.nop()
-				#time.sleep(1) #qua crasha alla mossa dopo
+				ris = self.inter.nop()            #qua crasha alla mossa dopo
 				return self.state,-1, False
 			#recharge
 
@@ -283,15 +261,6 @@ class Env(Environment):
 				else:
 					return self.state, -100, False
 
-			#if ris == 'TRAP':
-			#	state[x, y+1] = 'ai'
-			#	state[x, y] = '.'
-			#	return state, -100, false
-
-			if ris == 'WIN':	#non esiste
-				self.y = self.y+1	
-				self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.sizex, self.allies, self.enemies, self.team, self.loyalty)
-				return self.state, 1000, True
 			if ris == 'ERROR':
 				time.sleep(0.4)
 				ris = self.inter.nop()
@@ -322,15 +291,6 @@ class Env(Environment):
 				else:
 					return self.state, -100, False
 
-			#if ris == 'TRAP':
-			#	state[x+1, y] = 'ai'
-			#	state[x, y] = '.'
-			#	return state, -100, false
-
-			if ris == 'WIN':
-				self.x = self.x+1
-				self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.sizex, self.allies, self.enemies, self.team, self.loyalty)
-				return self.state, 1000, True
 			if ris == 'ERROR':
 				time.sleep(0.4)
 				ris = self.inter.nop()		
@@ -362,15 +322,6 @@ class Env(Environment):
 				else:
 					return self.state, -100, False
 
-			#if ris == 'TRAP':
-			#	state[x-1, y] = 'ai'
-			#	state[x, y] = '.'
-			#	return state, -100, false
-
-			if ris == 'WIN':
-				self.x = self.x-1
-				self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.sizex, self.allies, self.enemies, self.team, self.loyalty)
-				return self.state, 1000, True
 			if ris == 'ERROR':
 				time.sleep(0.4)
 				ris = self.inter.nop()
@@ -379,17 +330,15 @@ class Env(Environment):
 				return self.state,-1, False
 
 		if actions == 4:
-			print("guardo")    #da rifare
+			print("guardo")   
 			ris = self.inter.look()
 			while Data_Manager.check(str(ris)) == "ERROR":
 				print(str(ris))	
 				time.sleep(0.4)
 				ris = self.inter.nop()
-				print(ris)
-				#time.sleep(1)			
+				print(ris)			
 				ris = self.inter.look()
 			self.mapp = Data_Manager.mappa(str(ris), self.size)
-			#print(self.mapp)
 			self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.sizex, self.allies, self.enemies, self.team, self.loyalty)
 			return self.state, -5, False
 
