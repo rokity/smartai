@@ -11,7 +11,6 @@ import re
 import pickle
 from nuovo import Env
 from variabili import var
-from nuovo import conv
 from tensorforce.agents import Agent
 from tensorforce.environments import Environment
 from tensorforce.execution import Runner
