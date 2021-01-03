@@ -6,9 +6,11 @@ from pathlib import Path
 from datetime import date
 from datetime import datetime
 import pandas as pd
+from DataManager import Data_Manager
 host = "margot.di.unipi.it"
 port = 8422
 name= "AI-4"
+match = "test"
 TIME = 0.3
 
 class ChatServer:
@@ -16,10 +18,12 @@ class ChatServer:
   channels_joined=[]
   messages=[]
   log_file=""
-  def __init__(self, _host=host , _port=port,_name=name):
+  def __init__(self, _host=host , _port=port,_name=name, _match=match, _inter = ""):
     self.host = _host
     self.port = _port
     self.name= _name
+    self.match = _match
+    self.inter = _inter
     self.tn = Telnet(self.host, self.port)
     self.bootstrap_connection()
 
@@ -27,6 +31,7 @@ class ChatServer:
   def bootstrap_connection(self):
     self.tn.write(("NAME "+self.name).encode('ascii') + b"\n")
     self.join_all_channels()
+    self.join_existing_channel(self.match)
     self.init_file_logs()
     threading.Thread(target=self.listen, args=()).start()
     
@@ -64,7 +69,7 @@ class ChatServer:
   def init_file_logs(self):
     today = date.today()
     current_time = self.get_time_now()
-    self.log_file="data/logs/{}:{}.csv".format(today,current_time)
+    self.log_file="data/logs/{}:{}:{}:{}.csv".format(today,current_time, self.name, self.match)
     df=pd.DataFrame(columns = ['channel', 'user','message','time'])
     df.to_csv(self.log_file,index=False)
 
@@ -83,6 +88,8 @@ class ChatServer:
         message_text=" ".join(message[2:len(message)]).replace("\n", "")
         message={"channel":message[0],"user":message[1],"message":message_text}
         self.save_message_to_file(message)
+        if Data_Manager.meaning(message_text):
+          break
         if(message['channel'] in self.channels_joined):        
           self.check_message(message)        
         
@@ -91,10 +98,5 @@ class ChatServer:
   def check_message(self,message):
     self.is_new_tournament(message)
     return
-
-
-  
-
-      
 
 
