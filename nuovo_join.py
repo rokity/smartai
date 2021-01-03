@@ -394,8 +394,8 @@ class Env(Environment):
 		self._timestep = 1000
 		n = str(self.n)
 		self.inter.nome = self.match + str(self.n)
-		#self.chat= ChatServer(_name="AI-4-" + str(self.numero))
-		#self.chat.send_message_on_channel(channel=var.torneo,message="join")
+		self.chat= ChatServer(_name="AI-4-" + str(self.numero), _match=self.match + str(self.n),  _inter = self.inter)
+		self.chat.send_message_on_channel(channel=var.torneo,message="join")
 		ris = self.inter.join_game("AI-4-" + str(self.numero), "AI", "nn")
 		while str(ris)[2:7] == "ERROR":
 			time.sleep(0.3)
@@ -507,7 +507,7 @@ class Env(Environment):
 					return self.state, -10, False
 
 			if ris == 'BLOCKED':
-				if self.y!= 0 and self.mappa_stato[self.y-1][self.x] == 400 and self.state[12] == 0:	
+				if self.y!= 0 and self.mappa_stato[self.y-1][self.x] == 400 and self.state[14] == 0:	
 					self.win = True
 					return self.state, 500, True
 				else:
@@ -534,15 +534,15 @@ class Env(Environment):
 				else:
 					self.river = False	
 				self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.sizex, self.allies, self.enemies, self.team, self.loyalty, self.energy, self.river)
-				if self.state[1] == 1 and self.state[12] == 0:
+				if self.state[1] == 1 and self.state[14] == 0:
 					return self.state, 5, False
-				elif self.state[12] == 0:
+				elif self.state[14] == 0:
 					return self.state, -10, False
 				else:
 					return self.state, 0, False
 
 			if ris == 'BLOCKED':
-				if self.y != self.size - 1 and self.mappa_stato[self.y+1][self.x] == 400 and self.state[12] == 0:
+				if self.y != self.size - 1 and self.mappa_stato[self.y+1][self.x] == 400 and self.state[14] == 0:
 					self.win = True
 					return self.state, 500, True
 				else:
@@ -568,15 +568,15 @@ class Env(Environment):
 				else:
 					self.river = False
 				self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.sizex, self.allies, self.enemies, self.team, self.loyalty, self.energy, self.river)
-				if self.state[2] == 1 and self.state[12] == 0:
+				if self.state[2] == 1 and self.state[14] == 0:
 					return self.state, 5, False
-				elif self.state[12] == 0:
+				elif self.state[14] == 0:
 					return self.state, -10, False
 				else:
 					return self.state, 0, False
 
 			if ris == 'BLOCKED':
-				if self.x != self.sizex - 1 and self.mappa_stato[self.y][self.x+1] == 400 and self.state[12] == 0:
+				if self.x != self.sizex - 1 and self.mappa_stato[self.y][self.x+1] == 400 and self.state[14] == 0:
 					self.win = True
 					return self.state, 500, True
 				else:
@@ -602,16 +602,16 @@ class Env(Environment):
 				else:
 					self.river = False
 				self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.sizex, self.allies, self.enemies, self.team, self.loyalty, self.energy, self.river)
-				if self.state[2] == 1 and self.state[12] == 0:
+				if self.state[2] == 1 and self.state[14] == 0:
 					return self.state, 5, False
-				elif self.state[12] == 0:
+				elif self.state[14] == 0:
 					return self.state, -10, False
 				else:
 					return self.state, 0, False
 
 
 			if ris == 'BLOCKED':
-				if self.x != 0 and self.mappa_stato[self.y][self.x-1] == 400 and self.state[12] == 0:
+				if self.x != 0 and self.mappa_stato[self.y][self.x-1] == 400 and self.state[14] == 0:
 					self.win = True
 					return self.state, 500, True
 				else:
@@ -653,14 +653,14 @@ class Env(Environment):
 					return self.state, -20, False
 				if ris in self.allies:
 					self.allies.remove(ris)
-					if self.state[12] == 0:
+					if self.state[14] == 0:
 						return self.state, -50, False
 					else:
 						self.kill = self.kill + 1
 						return self.state, 100, False
 				if ris in self.enemies:
 					self.enemies.remove(ris) 
-					if self.state[12] == 0:
+					if self.state[14] == 0:
 						self.kill = self.kill + 1
 						return self.state, 100, False
 					else:
@@ -702,14 +702,14 @@ class Env(Environment):
 					return self.state, -20, False
 				if ris in self.allies:
 					self.allies.remove(ris)
-					if self.state[12] == 0:
+					if self.state[14] == 0:
 						return self.state, -50, False
 					else:
 						self.kill = self.kill + 1
 						return self.state, 100, False
 				if ris in self.enemies:
 					self.enemies.remove(ris) 
-					if self.state[12] == 0:
+					if self.state[14] == 0:
 						self.kill = self.kill + 1
 						return self.state, 100, False
 					else:
@@ -751,14 +751,14 @@ class Env(Environment):
 					return self.state, -20, False
 				if ris in self.allies:
 					self.allies.remove(ris)
-					if self.state[12] == 0:
+					if self.state[14] == 0:
 						return self.state, -50, False
 					else:
 						self.kill = self.kill + 1
 						return self.state, 100, False
 				if ris in self.enemies:
 					self.enemies.remove(ris) 
-					if self.state[12] == 0:
+					if self.state[14] == 0:
 						self.kill = self.kill + 1
 						return self.state, 100, False
 					else:
@@ -800,14 +800,14 @@ class Env(Environment):
 					return self.state, -20, False
 				if ris in self.allies:
 					self.allies.remove(ris)
-					if self.state[12] == 0:
+					if self.state[14] == 0:
 						return self.state, -50, False
 					else:
 						self.kill = self.kill + 1
 						return self.state, 100, False
 				if ris in self.enemies:
 					self.enemies.remove(ris) 
-					if self.state[12] == 0:
+					if self.state[14] == 0:
 						self.kill = self.kill + 1
 						return self.state, 100, False
 					else:

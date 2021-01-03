@@ -41,6 +41,7 @@ class Data_Manager:
 			return "ERROR"
 	def status_iniziale(stat):
 		stat = str(stat)
+		print(stat)
 		if stat[2:4]== "OK":
 			i = stat.find("state=")
 			stat = stat[i+6:]
@@ -152,3 +153,12 @@ class Data_Manager:
 			return "ERROR"
 		else:
 			return "OK"
+	def meaning(message):
+		print('##########')
+		print(message)
+		print('##########')
+		if message[0:13] == "Game finished":
+			return True
+		return False
+
+#AI-4-7 shot Wai4-----1 @GameServer AI-4-7 hit AI-4-9
