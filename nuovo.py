@@ -20,7 +20,7 @@ port = 8421
 TIME = var.TIME  #150 ms per training
 
 
-def get_state(mapp, bx, by, x, y, size, sizex, allies, enemies, t, l, energy, river):     #0-1-2-3 posizione rispetto alla bandiera (1 se siamo sotto e la direzione è nord)4-5-6-7 se ci sono muri vicini (0 = muro adiacente, 0.3 a distanza uno nella direzine cardinale, 0.6 a distanza 2, 0.9 a disranza 3, 1 non c'e un muro o una trappola a distanza 3) 8-9-10-11 se ci sono nemici in linea (0.5 nemici in linea, 0.6 se e' in linea ma nella colonna a destra, 0.4 nella colonna a sinistra, 0.7 nella seconda colonna a destra, 0.3 nella seconda colonna a sinistra, 0 se non c'e nessun nemico, questo è l'esempio del Nord) 12 bit per indicare l'energia (1 50-100% energia, 0.5 10-40% 0.1 1-20% 0 esaurita) 13 per inidcare se ci troviamo sul river o no (0 non siamo sul river, 1 si),14 per indicare se siamo impostori o no (0 non siamo impostori, 1 lo siamo)
+def get_state(mapp, bx, by, x, y, size, sizex, allies, enemies, t, l, energy, river):     #0-1-2-3 posizione rispetto alla bandiera (1 se siamo sotto e la direzione è nord e siamo a meno di 30, 0.7 a meno di 60, 0.4 a meno di 120 0.1 altrimenti, 0 se e' a sud)4-5-6-7 se ci sono muri vicini (0 = muro adiacente, 0.3 a distanza uno nella direzine cardinale, 0.6 a distanza 2, 0.9 a disranza 3, 1 non c'e un muro o una trappola a distanza 3) 8-9-10-11 se ci sono nemici in linea (0.5 nemici in linea, 0.6 se e' in linea ma nella colonna a destra, 0.4 nella colonna a sinistra, 0.7 nella seconda colonna a destra, 0.3 nella seconda colonna a sinistra, 0 se non c'e nessun nemico, questo è l'esempio del Nord) 12 bit per indicare l'energia (1 50-100% energia, 0.5 20-50% 0.1 1-20% 0 esaurita) 13 per inidcare se ci troviamo sul river o no (0 non siamo sul river, 1 si),14 per indicare se siamo impostori o no (0 non siamo impostori, 1 lo siamo)
 	stato = np.zeros(15)
 
 	if y > by:
@@ -415,6 +415,7 @@ class Env(Environment):
 		time.sleep(TIME)
 		ris = self.inter.status()
 		self.stato, self.energy, self.score, self.st, self.allies, self.enemies = Data_Manager.status(str(ris), self.name, self.symbol)
+		self.chat.player(str(ris), self.name, self.symbol)
 		ris = self.inter.look()
 
 		self.mapp = Data_Manager.mappa(str(ris), self.size)
@@ -632,7 +633,6 @@ class Env(Environment):
 
 		if actions == 5:
 			if self.energy > 0:
-				print("sparo a nord")
 				ris = self.inter.shoot("N")
 				ris = Data_Manager.colpito(str(ris))
 				print(ris)
@@ -681,7 +681,6 @@ class Env(Environment):
 
 		if actions == 6:
 			if self.energy > 0: 
-				print("sparo a sud")
 				ris = self.inter.shoot("S")
 				ris = Data_Manager.colpito(str(ris))
 				print(ris)
@@ -730,7 +729,6 @@ class Env(Environment):
 
 		if actions == 7:
 			if self.energy > 0:
-				print("sparo a est")
 				ris = self.inter.shoot("E")
 				ris = Data_Manager.colpito(str(ris))
 				print(ris)
@@ -779,7 +777,6 @@ class Env(Environment):
 
 		if actions == 8:
 			if self.energy > 0:
-				print("sparo a ovest")
 				ris = self.inter.shoot("W")
 				ris = Data_Manager.colpito(str(ris))
 				print(ris)

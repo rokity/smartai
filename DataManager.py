@@ -153,11 +153,35 @@ class Data_Manager:
 			return "ERROR"
 		else:
 			return "OK"
-	def meaning(message):
-		print('##########')
-		print(message)
-		print('##########')
+	def meaning(message, allies, enemies):
+		message = str(message)
+		hit = message.find("hit")
+		if hit != -1:
+			print('##########')
+			print(message)
+			print('##########')
+			print(allies)
+			print(enemies)
+			i = message.find(" ")
+			player_kill = message[:i]
+			player_killed = message[hit+4:]
+			if player_kill in allies and player_killed in allies:
+				allies.remove(player_killed)
+				return True, player_kill, allies, enemies
+			elif player_killed in allies:
+				allies.remove(player_killed)
+
+			return False, player_kill, allies, enemies
+		else:
+			return False, "", allies, enemies		
+
+
+
+	def finished(message):
 		if message[0:13] == "Game finished":
+			print('##########')
+			print(message)
+			print('##########')
 			return True
 		return False
 

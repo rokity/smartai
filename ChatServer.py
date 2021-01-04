@@ -7,6 +7,8 @@ from datetime import date
 from datetime import datetime
 import pandas as pd
 from DataManager import Data_Manager
+import re
+
 host = "margot.di.unipi.it"
 port = 8422
 name= "AI-4"
@@ -81,6 +83,8 @@ class ChatServer:
     df.to_csv(self.log_file,index=False)
 
   def listen(self):
+    self.allies = []
+    self.enemies = []
     while(True):
       message=self.tn.read_very_eager().decode("utf-8") 
       if(len(message)>0):
@@ -88,11 +92,57 @@ class ChatServer:
         message_text=" ".join(message[2:len(message)]).replace("\n", "")
         message={"channel":message[0],"user":message[1],"message":message_text}
         self.save_message_to_file(message)
-        if Data_Manager.meaning(message_text):
+        if Data_Manager.finished(message_text):
           break
+        accuse, nome, self.allies, self.enemies = Data_Manager.meaning(message_text, self.allies, self.enemies)
+        if accuse:
+          #accusare
+          print('impostore')
+          print(nome)
         if(message['channel'] in self.channels_joined):        
           self.check_message(message)        
         
+  def player(self, stat, name, symb):
+    if stat[2:4]== "OK":
+      self.allies = []
+      self.enemies = []
+      i = stat.find("team=")
+      stat = stat[i+5:]
+      team = stat[0]
+      i = stat.find("loyalty=")
+      stat = stat[i+8:]
+      loyalty = stat[0]
+      if team == loyalty:
+        self.impostor = 0
+      else:
+        self.impostor = 1
+
+      i = stat.find("symbol=")
+      while i!=-1:
+        stat = stat[i+7:]
+        symbol = stat[0]
+        i = stat.find("name=")
+        stat = stat[i+5:]
+        i = stat.find(" ")
+        pl = stat[:i]
+        if pl != name:
+          if symb == 0:
+            if bool(re.search('[A-Z]', symbol)):
+              self.enemies.append(str(pl))
+            else:
+              self.allies.append(str(pl))
+          else:	
+            if bool(re.search('[A-Z]', symbol)):
+              self.allies.append(str(pl))
+            else:
+              self.enemies.append(str(pl))
+        i = stat.find("symbol=")
+      print(self.allies)
+      print(self.enemies)			
+      return True
+    else:
+      print(stat)
+      return False
         
           
   def check_message(self,message):
