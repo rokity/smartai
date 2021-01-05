@@ -99,6 +99,7 @@ class ChatServer:
           #accusare
           print('impostore')
           print(nome)
+          #self.inter.accuse(nome)
         if(message['channel'] in self.channels_joined):        
           self.check_message(message)        
         
