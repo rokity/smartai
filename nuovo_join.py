@@ -645,7 +645,6 @@ class Env(Environment):
 			if self.energy > 0:
 				ris = self.inter.shoot("N")
 				ris = Data_Manager.colpito(str(ris))
-				print(ris)
 				if ris == '#':
 					return self.state, -20, False
 				if ris == '&':
@@ -693,7 +692,6 @@ class Env(Environment):
 			if self.energy > 0: 
 				ris = self.inter.shoot("S")
 				ris = Data_Manager.colpito(str(ris))
-				print(ris)
 				if ris == '#':
 					return self.state, -20, False
 				if ris == '&':
@@ -741,7 +739,6 @@ class Env(Environment):
 			if self.energy > 0:
 				ris = self.inter.shoot("E")
 				ris = Data_Manager.colpito(str(ris))
-				print(ris)
 				if ris == '#':
 					return self.state, -20, False
 				if ris == '&':
@@ -789,7 +786,6 @@ class Env(Environment):
 			if self.energy > 0:
 				ris = self.inter.shoot("W")
 				ris = Data_Manager.colpito(str(ris))
-				print(ris)
 				if ris == '#':
 					return self.state, -20, False
 				if ris == '&':
