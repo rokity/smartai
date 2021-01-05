@@ -8,6 +8,7 @@ from datetime import datetime
 import pandas as pd
 from DataManager import Data_Manager
 import re
+import numpy as np
 
 host = "margot.di.unipi.it"
 port = 8422
@@ -83,8 +84,12 @@ class ChatServer:
     df.to_csv(self.log_file,index=False)
 
   def listen(self):
-    self.allies = []
-    self.enemies = []
+    self.allies = {}
+    self.enemies = {}
+    self.impostor = False
+    self.mappa = []
+    self.size = 0
+    self.sizex = 0
     while(True):
       message=self.tn.read_very_eager().decode("utf-8") 
       if(len(message)>0):
@@ -94,8 +99,8 @@ class ChatServer:
         self.save_message_to_file(message)
         if Data_Manager.finished(message_text):
           break
-        accuse, nome, self.allies, self.enemies = Data_Manager.meaning(message_text, self.allies, self.enemies)
-        if accuse:
+        accuse, nome, self.allies, self.enemies = Data_Manager.meaning(message_text, self.allies, self.enemies, self.mappa,self.size, self.sizex)
+        if self.impostor == False and accuse:
           #accusare
           print('impostore')
           print(nome)
@@ -105,8 +110,8 @@ class ChatServer:
         
   def player(self, stat, name, symb):
     if stat[2:4]== "OK":
-      self.allies = []
-      self.enemies = []
+      self.allies = {}
+      self.enemies = {}
       i = stat.find("team=")
       stat = stat[i+5:]
       team = stat[0]
@@ -114,9 +119,9 @@ class ChatServer:
       stat = stat[i+8:]
       loyalty = stat[0]
       if team == loyalty:
-        self.impostor = 0
+        self.impostor = False
       else:
-        self.impostor = 1
+        self.impostor = True
 
       i = stat.find("symbol=")
       while i!=-1:
@@ -129,14 +134,14 @@ class ChatServer:
         if pl != name:
           if symb == 0:
             if bool(re.search('[A-Z]', symbol)):
-              self.enemies.append(str(pl))
+              self.enemies[pl] = symbol
             else:
-              self.allies.append(str(pl))
+              self.allies[pl] = symbol
           else:	
             if bool(re.search('[A-Z]', symbol)):
-              self.allies.append(str(pl))
+              self.allies[pl] = symbol
             else:
-              self.enemies.append(str(pl))
+              self.enemies[pl] = symbol
         i = stat.find("symbol=")
       print(self.allies)
       print(self.enemies)			
@@ -144,8 +149,21 @@ class ChatServer:
     else:
       print(stat)
       return False
+  def view(self, mappa, size, sizex):
+    self.mappa = mappa
+    self.size = size
+    self.sizex = sizex
+    return True
         
-          
+  def alive(self):
+    alleati = []
+    nemici = []
+    for i in self.allies.keys():
+      alleati.append(self.allies[i])
+    for i in self.enemies.keys():
+      nemici.append(self.enemies[i])
+    return alleati, nemici  
+        
   def check_message(self,message):
     self.is_new_tournament(message)
     return

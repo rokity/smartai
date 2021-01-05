@@ -636,6 +636,7 @@ class Env(Environment):
 				#time.sleep(1)			
 				ris = self.inter.look()
 			self.mapp = Data_Manager.mappa(str(ris), self.size)
+			self.chat.view(self.mapp, self.size, self.sizex)
 
 			self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.sizex, self.allies, self.enemies, self.team, self.loyalty, self.energy, self.river)
 			return self.state, -5, False
@@ -849,6 +850,7 @@ class Env(Environment):
 			print(self.energy)
 			print(self.score)
 			print(self.st)
+			self.allies, self.enemies = self.chat.alive()
 			print(self.allies)
 			print(self.enemies)
 			if self.stato == "FINISHED":

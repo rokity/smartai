@@ -90,14 +90,14 @@ class Data_Manager:
 		else:
 			print(stat)
 			return "ERROR"
-	def status(stat, name, symb):
+	def status(stat, name, symb):			#rimuovere alleati e nemici
 		if stat[2:4]== "OK":
 			allies = []
 			enemies = []
-			i = stat.find("state=")
+			i = stat.find("state=")        
 			stat = stat[i+6:]
 			i = stat.find(" ")
-			stato = stat[:i]
+			stato = stat[:i]		#return stato match
 			
 			i = stat.find("energy=")
 			stat = stat[i+7:]
@@ -116,7 +116,7 @@ class Data_Manager:
 					i = stat.find("state=")
 					stat = stat[i+6:]
 					i = stat.find("n")
-					state = stat[:i-1] 	#return state
+					state = stat[:i-1] 	#return stato giovatore
 				else:
 					i = stat.find("state=")
 					stat = stat[i+6:]
@@ -148,12 +148,11 @@ class Data_Manager:
 		else:
 			return "ERROR"
 	def check(ris):
-		#print(ris)
 		if ris[2:4] != "OK":
 			return "ERROR"
 		else:
 			return "OK"
-	def meaning(message, allies, enemies):
+	def meaning(message, allies, enemies, mappa, size, sizex):
 		message = str(message)
 		hit = message.find("hit")
 		if hit != -1:
@@ -165,11 +164,30 @@ class Data_Manager:
 			i = message.find(" ")
 			player_kill = message[:i]
 			player_killed = message[hit+4:]
-			if player_kill in allies and player_killed in allies:
-				allies.remove(player_killed)
-				return True, player_kill, allies, enemies
-			elif player_killed in allies:
-				allies.remove(player_killed)
+			if player_kill in allies:
+				if player_killed in allies:
+					t =  allies[player_kill]
+					t2 = allies[player_killed]
+					del allies[player_killed]
+					if controllo(mappa,t, t2, size, sizex, enemies):
+						del allies[player_kill]
+						enemies[player_kill] = t
+						print('777777777777777777777777777777777777')
+						return True, player_kill, allies, enemies
+				elif player_killed in enemies:
+					del enemies[player_killed]
+					return False, player_killed, allies, enemies
+			else:
+				if player_killed in allies:
+					del allies[player_killed]
+				elif player_killed in enemies:
+					t = enemies[player_kill]
+					t2 = enemies[player_killed]
+					del enemies[player_killed]
+					if controllo(mappa, t, t2, size, sizex, allies):
+						del enemies[player_kill]
+						allies[player_kill] = t
+						print('66666666666666666666666666666666666666')
 
 			return False, player_kill, allies, enemies
 		else:
@@ -184,5 +202,84 @@ class Data_Manager:
 			print('##########')
 			return True
 		return False
+def controllo(mappa, t, t2, size, sizex, team):
+	trovati = 0
+	avversario = []
+	for i in team.keys():
+		avversario.append(team[i])
+	for i in range(0, size):
+		for j in range(0, sizex):
+			if mappa[i][j] == t:
+				x = j
+				y = i
+				trovati = trovati+1
+			if mappa[i][j] == t2:
+				x2 = j
+				y2 = i	
+				trovati = trovati + 1 
+			if trovati == 2:
+				break
+		if trovati == 2:
+			break
+	if trovati != 2:
+		return False
+	if abs(x - x2) <= abs(y - y2):
+		if x <= x2:
+			if y <= y2:
+				for i in range(x, sizex):
+					for j in range(y, y2+1):
+						if mappa[j][i] in avversario:
+							return False
+				return True
+			else:
+				for i in range(x, sizex):
+					for j in range(y2, y+1):
+						if mappa[j][i] in avversario:
+							return False
+				return True
+		else:
+			if y <= y2:
+				for i in range(x, -1, -1):
+					for j in range(y, y2+1):
+						if mappa[j][i] in avversario:
+							return False
+				return True
+			else:
+				for i in range(x, -1, -1):
+					for j in range(y2, y+1):
+						if mappa[j][i] in avversario:
+							return False
+				return True
+	else:
+		if y <= y2:
+			if x <= x2:
+				for i in range(y, size):
+					for j in range(x, x2+1):
+						if mappa[i][j] in avversario:
+							return False
+				return True
+			else:
+				for i in range(y, size):
+					for j in range(x2, x+1):
+						if mappa[i][j] in avversario:
+							return False
+				return True
+		else:
+			if x <= x2:
+				for i in range(y, -1, -1):
+					for j in range(x, x2+1):
+						if mappa[i][j] in avversario:
+							return False
+				return True
+			else:
+				for i in range(y, -1, -1):
+					for j in range(x2, x+1):
+						if mappa[i][j] in avversario:
+							return False
+				return True	
 
-#AI-4-7 shot Wai4-----1 @GameServer AI-4-7 hit AI-4-9
+
+
+
+
+#AI-4-7 shot Wai4-1 @GameServer AI-4-7 hit AI-4-9
