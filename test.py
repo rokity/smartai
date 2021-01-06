@@ -30,6 +30,7 @@ TIME = var.TIME
 s = 0
 k = 0
 v = 0
+team = 0
 ked = 0
 for i in range(1, num):
 	env = Env.create(environment = Env(match, i, 10))	
@@ -82,9 +83,11 @@ for i in range(1, num):
 		ked = ked + 1
 	s = s + env.score
 	k = k + env.kill
+	team = team + env.chat.vittoria
 	print("Fine partita")
 	agent.save(directory='model-complete-2', format='checkpoint')
 print(v)
+print(team)
 print(s)
 print(k)
 print(ked)

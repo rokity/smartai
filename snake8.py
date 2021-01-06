@@ -1,7 +1,7 @@
 import getpass
 import telnetlib
 from Interface import Interface
-from DataManager import Data_Manager
+from DataManager_vecchio import Data_Manager
 from posBandiera import pos_bandiera
 from stato_mappa import stato_mappa	
 import time
@@ -17,7 +17,7 @@ np.set_printoptions(threshold=np.inf)
 
 match = var.nome
 num = var.numero
-mossa = 2
+mossa = 4
 host = "margot.di.unipi.it"
 port = 8421
 TIME = var.TIME
@@ -83,8 +83,9 @@ for i in range(1, num):
 				state = next_state
 				epochs += 1
 				if done:
-					print("vinto 8")
-					v = v+1
+					if env.win == True:
+						print("vinto 8")
+						v = v+1
 					break
 		if env.morto == False and done == False:
 			for mos in range (0, mossa):
@@ -99,8 +100,9 @@ for i in range(1, num):
 				new_value = (1 - alpha) * old_value + alpha * ( reward + gamma * next_max)
 				q_table[state, action] = new_value
 				if done:
-					print("vinto 1")
-					v = v+1
+					if env.win == True:
+						print("vinto 8")
+						v = v+1
 					break
 
 		if not done:

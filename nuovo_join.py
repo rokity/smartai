@@ -420,7 +420,7 @@ class Env(Environment):
 			self.stato = Data_Manager.status_wait(str(ris))
 			print(self.stato)
 
-		self.stato, self.energy, self.score, self.st, self.allies, self.enemies = Data_Manager.status(str(ris), self.name, self.symbol)
+		self.stato, self.energy, self.score, self.st, self.allies, self.enemies = Data_Manager.status_avversari(str(ris), self.name, self.symbol)
 		self.chat.player(str(ris), self.name, self.symbol)
 		ris = self.inter.look()
 		while Data_Manager.check(str(ris)) == "ERROR":
@@ -841,7 +841,7 @@ class Env(Environment):
 				print(ris)				
 				ris = self.inter.status()
 
-			self.stato, self.energy, self.score, self.st, self.allies, self.enemies = Data_Manager.status(str(ris), self.name, self.symbol)
+			self.stato, self.energy, self.score, self.st = Data_Manager.status(str(ris), self.name, self.symbol)
 			print(self.stato)
 			print(self.energy)
 			print(self.score)

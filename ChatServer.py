@@ -87,6 +87,8 @@ class ChatServer:
     self.allies = {}
     self.enemies = {}
     self.impostor = False
+    self.loyalty = -1
+    self.vittoria = 0
     self.mappa = []
     self.size = 0
     self.sizex = 0
@@ -97,7 +99,8 @@ class ChatServer:
         message_text=" ".join(message[2:len(message)]).replace("\n", "")
         message={"channel":message[0],"user":message[1],"message":message_text}
         self.save_message_to_file(message)
-        if Data_Manager.finished(message_text):
+        finished , self.vittoria = Data_Manager.finished(message_text, self.loyalty)
+        if finished:
           break
         accuse, nome, self.allies, self.enemies = Data_Manager.meaning(message_text, self.allies, self.enemies, self.mappa,self.size, self.sizex)
         if self.impostor == False and accuse:
@@ -117,8 +120,8 @@ class ChatServer:
       team = stat[0]
       i = stat.find("loyalty=")
       stat = stat[i+8:]
-      loyalty = stat[0]
-      if team == loyalty:
+      self.loyalty = stat[0]
+      if team == self.loyalty:
         self.impostor = False
       else:
         self.impostor = True

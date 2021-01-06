@@ -1,7 +1,7 @@
 import getpass
 import telnetlib
 from Interface import Interface
-from DataManager import Data_Manager
+from DataManager_vecchio import Data_Manager
 from posBandiera import pos_bandiera
 from stato_mappa import stato_mappa
 from variabili import var	
@@ -185,7 +185,7 @@ class env:
 					return self.state, -10, False
 
 			if ris == 'BLOCKED':
-				if self.y!= 0 and self.mappa_stato[self.y-1][self.x] == 300 and self.state[12] == 0:
+				if self.y!= 0 and self.mappa_stato[self.y-1][self.x] == 400 and self.state[12] == 0:
 					self.win = True
 					return self.state, 500, True
 				else:
@@ -225,7 +225,7 @@ class env:
 					return self.state, 0, False
 
 			if ris == 'BLOCKED':
-				if self.y != self.size - 1 and self.mappa_stato[self.y+1][self.x] == 300 and self.state[12] == 0:
+				if self.y != self.size - 1 and self.mappa_stato[self.y+1][self.x] == 400 and self.state[12] == 0:
 					self.win = True
 					return self.state, 500, True
 				else:
@@ -264,7 +264,7 @@ class env:
 					return self.state, 0, False
 
 			if ris == 'BLOCKED':
-				if self.x != self.sizex - 1 and self.mappa_stato[self.y][self.x+1] == 300 and self.state[12] == 0:
+				if self.x != self.sizex - 1 and self.mappa_stato[self.y][self.x+1] == 400 and self.state[12] == 0:
 					self.win = True
 					return self.state, 500, True
 				else:
@@ -304,7 +304,7 @@ class env:
 
 
 			if ris == 'BLOCKED':
-				if self.x != 0 and self.mappa_stato[self.y][self.x-1] == 300 and self.state[12] == 0:
+				if self.x != 0 and self.mappa_stato[self.y][self.x-1] == 400 and self.state[12] == 0:
 					self.win = True
 					return self.state, 500, True
 				else:

@@ -1,7 +1,7 @@
 import getpass
 import telnetlib
 from Interface import Interface
-from DataManager import Data_Manager
+from DataManager_vecchio import Data_Manager
 from posBandiera import pos_bandiera
 from stato_mappa import stato_mappa	
 import time
@@ -17,7 +17,7 @@ np.set_printoptions(threshold=np.inf)
 
 match = var.nome
 num = var.numero
-mossa = 5
+mossa = 2
 
 host = "margot.di.unipi.it"
 port = 8421
@@ -54,7 +54,7 @@ k = 0
 ked = 0
 for i in range(1, num):
 	p = i
-	state = env.reset_join(match, p, 2) #qua devo creare la partita e fare look
+	state = env.reset_join(match, p, 3) #qua devo creare la partita e fare look
 	state = conv(state)
 	epochs, penalties, reward, = 0, 0, 0
 	done = False
@@ -86,9 +86,10 @@ for i in range(1, num):
 				state = next_state
 				epochs += 1
 				if done:
-					print("vinto 3")
-					v = v+1
-					break
+					if env.win == True:
+						print("vinto 3")
+						v = v+1
+						break
 		if env.morto == False and done == False:
 			for mos in range (0, mossa):
 				action = env.mossa_giusta()
@@ -102,8 +103,9 @@ for i in range(1, num):
 				new_value = (1 - alpha) * old_value + alpha * ( reward + gamma * next_max)
 				q_table[state, action] = new_value
 				if done:
-					print("vinto 1")
-					v = v+1
+					if env.win == True:
+						print("vinto 3")
+						v = v+1
 					break
 
 		if not done:

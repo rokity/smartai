@@ -90,41 +90,7 @@ class Data_Manager:
 		else:
 			print(stat)
 			return "ERROR"
-	def status(stat, name, symb):			
-		if stat[2:4]== "OK":
-			allies = []
-			enemies = []
-			i = stat.find("state=")        
-			stat = stat[i+6:]
-			i = stat.find(" ")
-			stato = stat[:i]		#return stato match
-			
-			i = stat.find("energy=")
-			stat = stat[i+7:]
-			i = stat.find(" ")
-			energy = int(stat[:i])		#return energy
-			stat = stat[i+1:]
-			i = stat.find("n")
-			score = int(stat[6:i-1])	#return score
-			i = stat.find("symbol=")
-			while i!=-1:
-				stat = stat[i+7:]
-				symbol = stat[0]
-				i = stat.find("name=")
-				stat = stat[i+5:]
-				if stat[0:len(name)] == name:
-					i = stat.find("state=")
-					stat = stat[i+6:]
-					i = stat.find("n")
-					state = stat[:i-1] 	#return stato giovatore
-					break
-				i = stat.find("symbol=")				
-
-			return stato, energy, score, state
-		else:
-			print(stat)
-			return "ERROR"
-	def status_avversari(stat, name, symb):			#rimuovere alleati e nemici
+	def status(stat, name, symb):			#rimuovere alleati e nemici
 		if stat[2:4]== "OK":
 			allies = []
 			enemies = []
@@ -211,7 +177,7 @@ class Data_Manager:
 				elif player_killed in enemies:
 					del enemies[player_killed]
 					return False, player_killed, allies, enemies
-			if player_kill in enemies:
+			else:
 				if player_killed in allies:
 					del allies[player_killed]
 				elif player_killed in enemies:
@@ -229,18 +195,13 @@ class Data_Manager:
 
 
 
-	def finished(message, loyalty):
+	def finished(message):
 		if message[0:13] == "Game finished":
 			print('##########')
 			print(message)
 			print('##########')
-			#message = str(message)
-			i = message.find("team ")
-			if loyalty == message[i+5]:
-				return True, 1
-			else:
-				return True, 0
-		return False, 0
+			return True
+		return False
 def controllo(mappa, t, t2, size, sizex, team):
 	trovati = 0
 	avversario = []
@@ -321,4 +282,3 @@ def controllo(mappa, t, t2, size, sizex, team):
 
 
 
-#AI-4-7 shot Wai4-1 @GameServer AI-4-7 hit AI-4-9
