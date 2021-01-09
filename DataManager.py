@@ -186,7 +186,7 @@ class Data_Manager:
 			return "ERROR"
 		else:
 			return "OK"
-	def meaning(message, allies, enemies, mappa, size, sizex):
+	def meaning(message, allies, enemies, mappa, size, sizex, nature, inter):	#eseguire il judge commentato
 		message = str(message)
 		hit = message.find("hit")
 		if hit != -1:
@@ -200,6 +200,7 @@ class Data_Manager:
 			player_killed = message[hit+4:]
 			if player_kill in allies:
 				if player_killed in allies:
+					#inter.judge(player_kill, "AI")
 					t =  allies[player_kill]
 					t2 = allies[player_killed]
 					del allies[player_killed]
@@ -215,6 +216,7 @@ class Data_Manager:
 				if player_killed in allies:
 					del allies[player_killed]
 				elif player_killed in enemies:
+					#inter.judge(player_kill, "AI")
 					t = enemies[player_kill]
 					t2 = enemies[player_killed]
 					del enemies[player_killed]

@@ -86,5 +86,11 @@ class Interface:
 		risp = self.tn.read_some()
 		return risp
 
+	def judge(self, name, typ):
+		self.tn.write((self.nome + " JUDGE " + name + " " + typ).encode('ascii') + b"\n")
+		time.sleep(TIME)
+		risp = self.tn.read_some()
+		return risp
+
 
 

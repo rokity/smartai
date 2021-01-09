@@ -86,6 +86,7 @@ class ChatServer:
   def listen(self):
     self.allies = {}
     self.enemies = {}
+    self.nature = {}
     self.impostor = False
     self.loyalty = -1
     self.vittoria = 0
@@ -102,7 +103,7 @@ class ChatServer:
         finished , self.vittoria = Data_Manager.finished(message_text, self.loyalty)
         if finished:
           break
-        accuse, nome, self.allies, self.enemies = Data_Manager.meaning(message_text, self.allies, self.enemies, self.mappa,self.size, self.sizex)
+        accuse, nome, self.allies, self.enemies, self.nature = Data_Manager.meaning(message_text, self.allies, self.enemies, self.mappa,self.size, self.sizex, self.nature, self.inter)
         if self.impostor == False and accuse:
           #accusare
           print('impostore')
@@ -111,10 +112,11 @@ class ChatServer:
         if(message['channel'] in self.channels_joined):        
           self.check_message(message)        
         
-  def player(self, stat, name, symb):
+  def player(self, stat, name, symb):       #eseguire il judge commentato
     if stat[2:4]== "OK":
       self.allies = {}
       self.enemies = {}
+      self.nature = {}
       i = stat.find("team=")
       stat = stat[i+5:]
       team = stat[0]
@@ -145,9 +147,14 @@ class ChatServer:
               self.allies[pl] = symbol
             else:
               self.enemies[pl] = symbol
+        self.nature[pl] = False
         i = stat.find("symbol=")
       print(self.allies)
-      print(self.enemies)			
+      print(self.enemies)
+      print(self.nature)
+      for i in self.nature.keys():
+        break
+        #self.inter.judge(self.nature[i], "H")		
       return True
     else:
       print(stat)
