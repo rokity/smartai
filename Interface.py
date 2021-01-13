@@ -2,6 +2,7 @@ import getpass
 import telnetlib
 import time
 from variabili import var
+from threading import Semaphore
 
 
 TIME = var.TIME
@@ -10,14 +11,17 @@ class Interface:
 		self.host = host
 		self.port = port
 		self.nome = nome
+		self.semaphore= Semaphore(1)
 		self.tn = telnetlib.Telnet(self.host, self.port)
 		time.sleep(0.6)
 
 	def new_game(self, nome, form, size, typ = ""):
 		self.nome = nome
+		self.semaphore.acquire()
 		self.tn.write(("NEW "+self.nome + " " + form + size + typ).encode('ascii') + b"\n")
 		time.sleep(0.6)
 		risp = self.tn.read_some()
+		self.semaphore.release()
 		return risp
 
 	def join_game(self, player, nature, role): #info=""):
@@ -40,6 +44,7 @@ class Interface:
 		return risp
 
 	def look(self):
+		self.semaphore.acquire()
 		time.sleep(0.2)
 		self.tn.write((self.nome + " LOOK").encode('ascii') + b"\n")
 		time.sleep(TIME)
@@ -48,21 +53,27 @@ class Interface:
 		if c[2:4] == "OK":
 			r = self.tn.read_until(("\n").encode('ascii'))
 		#r = self.tn.read_until(("\n").encode('ascii'))
+		self.semaphore.release()
 		return risp
 
 	def move(self, direction):
+		self.semaphore.acquire()
 		self.tn.write((self.nome + " MOVE "+ direction).encode('ascii') + b"\n")
 		time.sleep(TIME)
 		risp = self.tn.read_some()
+		self.semaphore.release()
 		return risp
 
 	def shoot(self, direction):
+		self.semaphore.acquire()
 		self.tn.write((self.nome + " SHOOT "+ direction).encode('ascii') + b"\n")
 		time.sleep(TIME)
 		risp = self.tn.read_some()
+		self.semaphore.release()
 		return risp
 	
 	def status(self):
+		self.semaphore.acquire()
 		time.sleep(0.2)
 		self.tn.write((self.nome + " STATUS").encode('ascii') + b"\n")
 		time.sleep(TIME)
@@ -72,24 +83,31 @@ class Interface:
 		if c[2:4] == "OK":
 			r = self.tn.read_until(("\n").encode('ascii'))
 		#r = self.tn.read_until(("\n").encode('ascii'))
+		self.semaphore.release()
 		return risp
 
 	def accuse(self, player):
+		self.semaphore.acquire()
 		self.tn.write((self.nome + " ACCUSE " + player).encode('ascii') + b"\n")
 		time.sleep(TIME)
 		risp = self.tn.read_some()
+		self.semaphore.release()
 		return risp
 
 	def nop(self):
+		self.semaphore.acquire()
 		self.tn.write((self.nome + " NOP").encode('ascii') + b"\n")
 		time.sleep(0.6)
 		risp = self.tn.read_some()
+		self.semaphore.release()
 		return risp
 
 	def judge(self, name, typ):
+		self.semaphore.acquire()
 		self.tn.write((self.nome + " JUDGE " + name + " " + typ).encode('ascii') + b"\n")
 		time.sleep(TIME)
 		risp = self.tn.read_some()
+		self.semaphore.release()
 		return risp
 
 
