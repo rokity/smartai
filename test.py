@@ -19,7 +19,7 @@ np.set_printoptions(threshold=np.inf)
 
 match = var.nome
 num = var.numero
-mossa = 0
+mossa = 3
 
 host = "margot.di.unipi.it"
 port = 8421
@@ -33,7 +33,7 @@ v = 0
 team = 0
 ked = 0
 for i in range(1, num):
-	env = Env.create(environment = Env(match, i, 10))	
+	env = Env.create(environment = Env(match, i, 1))	
 	#agent = Agent.create(agent = 'ppo', environment = env, max_episode_timesteps = 1000, batch_size = 1)
 	agent = Agent.load(directory='model-complete-2', format='checkpoint', environment=env)
 
@@ -41,16 +41,16 @@ for i in range(1, num):
 	terminal = False
 	while not terminal:
 		if env.morto == False:
-			for mos in range(0, 3-mossa):
+			for mos in range(0, 2):
+				print('mosse computer')
 
 				if env.morto == True:
-					#actions = agent.act(states = states)
 					actions = 4
 					states, reward, terminal = env.execute(actions = actions)
 				else:
-					actions = agent.act(states = states)
+					actions = agent.act(states = states, independent = True, deterministic = True) #, independent = True, deterministic = True
 					states, reward, terminal = env.execute(actions = actions)
-					agent.observe(terminal = terminal, reward = reward)	
+					#agent.observe(terminal = terminal, reward = reward) #da silenziare per validation	
 
 				if terminal:
 					if env.win == True:
@@ -59,24 +59,18 @@ for i in range(1, num):
 					break
 		if env.morto == False and terminal == False:
 			for mos in range(0, mossa):
-				#actions = agent.act(states = states)
 				actions = env.mossa_giusta()
 				states, reward, terminal = env.execute(actions = actions)
-				#agent.observe(terminal = terminal, reward = reward)
 				if terminal:
 					if env.win == True:
 						print('vinto 10')
 						v = v + 1
 					break
 		if not terminal:
-			#actions = agent.act(states = states)
 			actions = 4				
 			states, reward, terminal = env.execute(actions = actions)
-			#agent.observe(terminal = terminal, reward = reward)
-			#actions = agent.act(states = states)
 			actions = 9
 			states, reward, terminal = env.execute(actions = actions)
-			#agent.observe(terminal = terminal, reward = reward)
 
 
 	if env.morto:

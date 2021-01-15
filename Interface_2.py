@@ -5,7 +5,7 @@ from variabili import var
 from threading import Semaphore
 
 
-TIME = var.TIME
+TIME = 2
 class Interface:
 	def __init__(self, host = "margot.di.unipi.it", port = 8421, nome=""):
 		self.host = host
@@ -25,6 +25,7 @@ class Interface:
 		return risp
 
 	def join_game(self, player, nature, role): #info=""):
+		#print(self.nome + " JOIN "+player+" "+ nature + " "+ role)
 		self.tn.write((self.nome + " JOIN "+player+" "+ nature + " "+ role).encode('ascii') + b"\n") #+ " "+info
 		time.sleep(1)
 		risp = self.tn.read_some()
@@ -77,6 +78,7 @@ class Interface:
 		self.tn.write((self.nome + " STATUS").encode('ascii') + b"\n")
 		time.sleep(TIME)
 		risp = self.tn.read_until(("ENDOFSTATUS").encode('ascii'))
+		#print(risp)
 		c = str(risp)
 		if c[2:4] == "OK":
 			r = self.tn.read_until(("\n").encode('ascii'))
@@ -107,7 +109,3 @@ class Interface:
 		risp = self.tn.read_some()
 		self.semaphore.release()
 		return risp
-
-
-
-

@@ -60,13 +60,12 @@ for i in range(1, num):
 			for mos in range(0, 3-mossa):
 
 				if env.morto == True:
-					#actions = agent.act(states = states)
 					actions = 4
 					states, reward, terminal = env.execute(actions = actions)
 				else:
-					actions = agent.act(states = states)
+					actions = agent.act(states = states) #, independent = True, deterministic = True
 					states, reward, terminal = env.execute(actions = actions)
-					agent.observe(terminal = terminal, reward = reward)
+					agent.observe(terminal = terminal, reward = reward) #da silenziare per validation
 	
 				if terminal:
 					if env.win == True:
@@ -75,24 +74,18 @@ for i in range(1, num):
 					break
 		if env.morto == False and terminal == False:
 			for mos in range(0, mossa):
-				#actions = agent.act(states = states)
 				actions = env.mossa_giusta()
 				states, reward, terminal = env.execute(actions = actions)
-				#agent.observe(terminal = terminal, reward = reward)
 				if terminal:
 					if env.win == True:
 						print('vinto 0')
 						v = v + 1
 					break
 		if not terminal:
-			#actions = agent.act(states = states)
 			actions = 4				
 			states, reward, terminal = env.execute(actions = actions)
-			#agent.observe(terminal = terminal, reward = reward)
-			#actions = agent.act(states = states)
 			actions = 9
 			states, reward, terminal = env.execute(actions = actions)
-			#agent.observe(terminal = terminal, reward = reward)
 
 
 	if env.morto:
@@ -101,7 +94,7 @@ for i in range(1, num):
 	k = k + env.kill
 	team = team + env.chat.vittoria
 	print("Fine partita")
-	agent.save(directory='model-complete-1', format='checkpoint')
+	#agent.save(directory='model-complete-1', format='checkpoint')
 print(v)
 print(team)
 print(s)

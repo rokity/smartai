@@ -1,7 +1,7 @@
 from tensorforce.environments import Environment
 import getpass
 import telnetlib
-from Interface import Interface
+from Interface_2 import Interface
 from DataManager import Data_Manager
 from posBandiera import pos_bandiera
 from stato_mappa import stato_mappa
@@ -17,7 +17,7 @@ from ChatServer import ChatServer
 #variabili globali e funzioni
 host = "margot.di.unipi.it"
 port = 8421
-TIME = var.TIME  #150 ms per training
+TIME = 2  #150 ms per training
 
 
 def get_state(mapp, bx, by, x, y, size, sizex, allies, enemies, t, l, energy, river):     #0-1-2-3 posizione rispetto alla bandiera (1 se siamo sotto e la direzione è nord e siamo a meno di 30, 0.7 a meno di 60, 0.4 a meno di 120 0.1 altrimenti, 0 se e' a sud)4-5-6-7 se ci sono muri vicini (0 = muro adiacente, 0.3 a distanza uno nella direzine cardinale, 0.6 a distanza 2, 0.9 a disranza 3, 1 non c'e un muro o una trappola a distanza 3) 8-9-10-11 se ci sono nemici in linea (0.5 nemici in linea, 0.6 se e' in linea ma nella colonna a destra, 0.4 nella colonna a sinistra, 0.7 nella seconda colonna a destra, 0.3 nella seconda colonna a sinistra, 0 se non c'e nessun nemico, questo è l'esempio del Nord) 12 bit per indicare l'energia (1 50-100% energia, 0.5 20-50% 0.1 1-20% 0 esaurita) 13 per inidcare se ci troviamo sul river o no (0 non siamo sul river, 1 si),14 per indicare se siamo impostori o no (0 non siamo impostori, 1 lo siamo)
@@ -399,7 +399,7 @@ class Env(Environment):
 	def reset(self):
 		ris = self.inter.new_game(self.match + self.n, self.form, self.size)
 		print(str(ris))
-		time.sleep(0.5)
+		time.sleep(2)
 		ris = self.inter.join_game("AI-4-" + self.numero, "AI", "nn")
 		self.chat= ChatServer(_name="AI-4-" + str(self.numero), _match=self.match + str(self.n), _inter = self.inter)
 		self.chat.send_message_on_channel(channel=var.torneo,message="join")
@@ -409,7 +409,7 @@ class Env(Environment):
 		self.x = int(self.x)
 		self.y = int(self.y)		
 		self.morto = False
-		time.sleep(5)
+		time.sleep(10)
 		ris = self.inter.start_game()
 		print(str(ris))
 		time.sleep(TIME)
@@ -493,7 +493,7 @@ class Env(Environment):
 				else:
 					self.river = False
 				self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.sizex, self.allies, self.enemies, self.team, self.loyalty, self.energy, self.river)
-				if self.state[0] == 1:
+				if self.state[0] > 0 and self.state[14] == 0:
 					return self.state, 5, False
 				else:
 					return self.state, -10, False
@@ -506,7 +506,7 @@ class Env(Environment):
 					return self.state, -100, False
 
 			if ris == 'ERROR':
-				time.sleep(0.4)
+				time.sleep(5)
 				ris = self.inter.nop()
 				#time.sleep(1) #qua crasha alla mossa dopo
 				return self.state,-1, False
@@ -526,7 +526,7 @@ class Env(Environment):
 				else:
 					self.river = False	
 				self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.sizex, self.allies, self.enemies, self.team, self.loyalty, self.energy, self.river)
-				if self.state[1] == 1 and self.state[14] == 0:
+				if self.state[1] > 0 and self.state[14] == 0:
 					return self.state, 5, False
 				elif self.state[14] == 0:
 					return self.state, -10, False
@@ -541,7 +541,7 @@ class Env(Environment):
 					return self.state, -100, False
 
 			if ris == 'ERROR':
-				time.sleep(0.4)
+				time.sleep(5)
 				ris = self.inter.nop()
 				print(ris)
 				#time.sleep(1)
@@ -560,7 +560,7 @@ class Env(Environment):
 				else:
 					self.river = False
 				self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.sizex, self.allies, self.enemies, self.team, self.loyalty, self.energy, self.river)
-				if self.state[2] == 1 and self.state[14] == 0:
+				if self.state[2] > 0 and self.state[14] == 0:
 					return self.state, 5, False
 				elif self.state[14] == 0:
 					return self.state, -10, False
@@ -575,7 +575,7 @@ class Env(Environment):
 					return self.state, -100, False
 
 			if ris == 'ERROR':
-				time.sleep(0.4)
+				time.sleep(5)
 				ris = self.inter.nop()		
 				#time.sleep(1)
 				print(ris)
@@ -594,7 +594,7 @@ class Env(Environment):
 				else:
 					self.river = False
 				self.state = get_state(self.mapp, self.bx, self.by, self.x, self.y, self.size, self.sizex, self.allies, self.enemies, self.team, self.loyalty, self.energy, self.river)
-				if self.state[2] == 1 and self.state[14] == 0:
+				if self.state[2] > 0 and self.state[14] == 0:
 					return self.state, 5, False
 				elif self.state[14] == 0:
 					return self.state, -10, False
@@ -610,18 +610,18 @@ class Env(Environment):
 					return self.state, -100, False
 
 			if ris == 'ERROR':
-				time.sleep(0.4)
+				time.sleep(5)
 				ris = self.inter.nop()
 				print(ris)
 				#time.sleep(1)
 				return self.state,-1, False
 
 		if actions == 4:
-			print("guardo")    #da rifare
+			#print("guardo")    #da rifare
 			ris = self.inter.look()
 			while Data_Manager.check(str(ris)) == "ERROR":
 				print(str(ris))	
-				time.sleep(0.4)
+				time.sleep(5)
 				ris = self.inter.nop()
 				print(ris)
 				#time.sleep(1)			
@@ -671,7 +671,7 @@ class Env(Environment):
 				if ris == "not shoot":
 					return self.state, -20, False
 				if ris == 'ERROR':
-					time.sleep(0.4)
+					time.sleep(5)
 					ris = self.inter.nop()
 					print(ris)
 					#time.sleep(1)
@@ -718,7 +718,7 @@ class Env(Environment):
 				if ris == "not shoot":
 					return self.state, -20, False
 				if ris == 'ERROR':
-					time.sleep(0.4)
+					time.sleep(5)
 					ris = self.inter.nop()
 					print(ris)
 					#time.sleep(1)
@@ -765,7 +765,7 @@ class Env(Environment):
 				if ris == "not shoot":
 					return self.state, -20, False
 				if ris == 'ERROR':
-					time.sleep(0.4)
+					time.sleep(5)
 					ris = self.inter.nop()
 					print(ris)
 					#time.sleep(1)
@@ -813,7 +813,7 @@ class Env(Environment):
 				if ris == "not shoot":
 					return self.state, -20, False
 				if ris == 'ERROR':
-					time.sleep(0.4)
+					time.sleep(5)
 					ris = self.inter.nop()
 					print(ris)
 					#time.sleep(1)
@@ -823,20 +823,20 @@ class Env(Environment):
 			
 
 		if actions == 9:
-			print("stato")     #valutare
+			#print("stato")     #valutare
 			ris = self.inter.status()
 			while Data_Manager.check(str(ris)) == "ERROR":
 				print(str(ris))
-				time.sleep(0.4)
+				time.sleep(5)
 				ris = self.inter.nop()
 				print(ris)				
 				ris = self.inter.status()
 
 			self.stato, self.energy, self.score, self.st = Data_Manager.status(str(ris), self.name, self.symbol)
 			print(self.stato)
-			print(self.energy)
-			print(self.score)
-			print(self.st)
+			#print(self.energy)
+			#print(self.score)
+			#print(self.st)
 			self.allies, self.enemies = self.chat.alive()
 			print(self.allies)
 			print(self.enemies)

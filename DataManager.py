@@ -188,19 +188,22 @@ class Data_Manager:
 			return "OK"
 	def meaning(message, allies, enemies, mappa, size, sizex, nature, inter):	#eseguire il judge commentato
 		message = str(message)
+		#print('##########')
+		#print(message)
 		hit = message.find("hit")
 		if hit != -1:
-			print('##########')
-			print(message)
-			print('##########')
-			print(allies)
-			print(enemies)
+			#print('##########')
+			#print(message)
+			#print('##########')
+			#print(allies)
+			#print(enemies)
 			i = message.find(" ")
 			player_kill = message[:i]
 			player_killed = message[hit+4:]
 			if player_kill in allies:
 				if player_killed in allies:
-					#inter.judge(player_kill, "AI")
+					inter.judge(player_kill, "AI")
+					nature[player_kill] = True
 					t =  allies[player_kill]
 					t2 = allies[player_killed]
 					del allies[player_killed]
@@ -208,15 +211,16 @@ class Data_Manager:
 						del allies[player_kill]
 						enemies[player_kill] = t
 						print('777777777777777777777777777777777777')
-						return True, player_kill, allies, enemies
+						return True, player_kill, allies, enemies, nature
 				elif player_killed in enemies:
 					del enemies[player_killed]
-					return False, player_killed, allies, enemies
+					return False, player_killed, allies, enemies, nature
 			if player_kill in enemies:
 				if player_killed in allies:
 					del allies[player_killed]
 				elif player_killed in enemies:
-					#inter.judge(player_kill, "AI")
+					inter.judge(player_kill, "AI")
+					nature[player_kill] = True
 					t = enemies[player_kill]
 					t2 = enemies[player_killed]
 					del enemies[player_killed]
@@ -225,9 +229,19 @@ class Data_Manager:
 						allies[player_kill] = t
 						print('66666666666666666666666666666666666666')
 
-			return False, player_kill, allies, enemies
+			return False, player_kill, allies, enemies, nature
+		elif message.find("condamned") != -1 :    #AI-4-10p1 @GameServer EMERGENCY MEETING condamned AI-4-10, who was NOT an impostor!
+			i = message.find("condamned ")
+			message = message[i+10:]
+			i = message.find(",")
+			player_killed = message[:i]
+			if player_killed in allies:
+				del allies[player_killed]
+			elif player_killed in enemies:
+				del enemies[player_killed]
+			return False, " ", allies, enemies, nature
 		else:
-			return False, "", allies, enemies		
+			return False, " ", allies, enemies, nature		
 
 
 
@@ -236,7 +250,6 @@ class Data_Manager:
 			print('##########')
 			print(message)
 			print('##########')
-			#message = str(message)
 			i = message.find("team ")
 			if loyalty == message[i+5]:
 				return True, 1
